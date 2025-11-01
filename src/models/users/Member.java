@@ -3,8 +3,13 @@ package models.users;
 public class Member extends Customer {
     private int point;
 
-    public Member(int point, String userID, String name, Role role) {
-        super(userID, name, Role.CUSTOMER);
+    public Member(int point, int userID, String name) {
+        super(userID, name);
         this.point = point;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + this.point;
     }
 }

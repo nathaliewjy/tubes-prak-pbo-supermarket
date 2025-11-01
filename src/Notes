@@ -4,3 +4,9 @@
 - next to do list :
     - revisi models
     - nentuin menu?
+
+2 November 2025 :
+- getter, setter, toString() --> users, Product, foods (ngantuk)
+- class Employee dibikin abstract biar bisa ngitung salary yg beda"
+- yang jadi interface tuh class apa aja?
+

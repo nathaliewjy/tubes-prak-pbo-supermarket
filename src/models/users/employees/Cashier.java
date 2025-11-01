@@ -7,7 +7,12 @@ import java.util.Date;
 
 public class Cashier extends Employee {
 
-    public Cashier(int salary, Date hireDate, int workingHours, String userID, String name, Role role) {
+    public Cashier(int salary, Date hireDate, int workingHours, int userID, String name) {
         super(salary, hireDate, workingHours, userID, name, Role.CASHIER);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

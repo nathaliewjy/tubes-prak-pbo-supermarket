@@ -2,7 +2,12 @@ package models.users;
 
 public class Customer extends User {
 
-    public Customer(String userID, String name, Role role) {
+    public Customer(int userID, String name) {
         super(userID, name, Role.CUSTOMER);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

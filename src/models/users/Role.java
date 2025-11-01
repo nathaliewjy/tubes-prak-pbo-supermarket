@@ -1,5 +1,5 @@
 package models.users;
 
 public enum Role {
-    CUSTOMER, MANAGER, CASHIER, STOCKER, SUPPLIER
+    CUSTOMER, CASHIER, MANAGER, STOCKER, SUPPLIER
 }
