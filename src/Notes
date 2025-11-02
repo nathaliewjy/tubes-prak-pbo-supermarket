@@ -6,7 +6,10 @@
     - nentuin menu?
 
 2 November 2025 :
-- getter, setter, toString() --> users, Product, foods (ngantuk)
+- getter, setter, toString() all done kecuali Cart masih error
 - class Employee dibikin abstract biar bisa ngitung salary yg beda"
+- harusnya tiap class udah nyambung (kalo di db kek pk fk nya)
 - yang jadi interface tuh class apa aja?
+
+
 

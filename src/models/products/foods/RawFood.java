@@ -15,11 +15,11 @@ public class RawFood extends Food {
         this.isOrganic = isOrganic;
     }
 
-    public boolean getIsOrganic() {
+    public boolean isOrganic() {
         return this.isOrganic;
     }
 
-    public void setIsOrganic(boolean isOrganic) {
+    public void setOrganic(boolean isOrganic) {
         this.isOrganic = isOrganic;
     }
 
