@@ -5,11 +5,14 @@
     - revisi models
     - nentuin menu?
 
-2 November 2025 :
-- getter, setter, toString() all done kecuali Cart masih error
+2 November 2025 03.31 :
+- getter, setter, toString() --> users, Product, foods (ngantuk)
 - class Employee dibikin abstract biar bisa ngitung salary yg beda"
-- harusnya tiap class udah nyambung (kalo di db kek pk fk nya)
 - yang jadi interface tuh class apa aja?
 
+2 November 2025 15.16 :
+- getter, setter, toString() all done kecuali Cart masih error
+- harusnya tiap class udah nyambung (kalo di db kek pk fk nya)
 
-
+3 November 2025 20.23 :
+- hapus"in child Product

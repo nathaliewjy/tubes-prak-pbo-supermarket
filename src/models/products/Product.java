@@ -11,19 +11,19 @@ public abstract class Product {
     private double price;
     private int stockInStorage;
     private int stockInShelf;
-    private String unit;
     private Date manufactureDate;
+    private Date expiryDate;
     private Supplier sup; // jd tiap prod punya 1 sup
 
-    public Product(int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, String unit, Date manufactureDate, Supplier sup) {
+    public Product(int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Supplier sup) {
         this.prodID = prodID;
         this.brand = brand;
         this.category = category;
-        this.price =  price;
+        this.price = price;
         this.stockInStorage = stockInStorage;
         this.stockInShelf = stockInShelf;
-        this.unit = unit;
         this.manufactureDate = manufactureDate;
+        this.expiryDate = expiryDate;
         this.sup = sup;
     }
 
@@ -75,21 +75,20 @@ public abstract class Product {
         this.stockInShelf = stockInShelf;
     }
 
-    public String getUnit() {
-        return this.unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
     public Date getManufactureDate() {
         return this.manufactureDate;
     }
 
     public void setManufactureDate(Date manufactureDate) {
         this.manufactureDate = manufactureDate;
+    }
 
+    public Date getExpiryDate() {
+        return this.expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = Product.this.expiryDate;
     }
 
     public Supplier getSup() {
@@ -102,6 +101,6 @@ public abstract class Product {
 
     @Override
     public String toString() {
-        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.unit + " " + this.manufactureDate + " " + this.sup;
+        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.manufactureDate + " " + this.expiryDate + " " + this.sup;
     }
 }
