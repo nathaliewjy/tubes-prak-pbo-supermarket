@@ -1,7 +1,5 @@
 package models.products;
 
-import models.users.Supplier;
-
 import java.util.Date;
 
 public abstract class Product {
@@ -13,9 +11,8 @@ public abstract class Product {
     private int stockInShelf;
     private Date manufactureDate;
     private Date expiryDate;
-    private Supplier sup; // jd tiap prod punya 1 sup
 
-    public Product(int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Supplier sup) {
+    public Product(int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         this.prodID = prodID;
         this.brand = brand;
         this.category = category;
@@ -24,7 +21,6 @@ public abstract class Product {
         this.stockInShelf = stockInShelf;
         this.manufactureDate = manufactureDate;
         this.expiryDate = expiryDate;
-        this.sup = sup;
     }
 
     public int getProdID() {
@@ -91,16 +87,8 @@ public abstract class Product {
         this.expiryDate = Product.this.expiryDate;
     }
 
-    public Supplier getSup() {
-        return this.sup;
-    }
-
-    public void setSup(Supplier sup) {
-        this.sup = sup;
-    }
-
     @Override
     public String toString() {
-        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.manufactureDate + " " + this.expiryDate + " " + this.sup;
+        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.manufactureDate + " " + this.expiryDate;
     }
 }

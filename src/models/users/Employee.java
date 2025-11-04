@@ -3,15 +3,25 @@ package models.users;
 import java.util.Date;
 
 public abstract class Employee extends User {
+    private int nik;
     private int salary;
     private Date hireDate;
     private int workingHours;
 
-    public Employee(int salary, Date hireDate, int workingHours, int userID, String name, Role role) {
+    public Employee(int nik, int salary, Date hireDate, int workingHours, int userID, String name, Role role) {
         super(userID, name, role);
+        this.nik = nik;
         this.salary = salary;
         this.hireDate = hireDate;
         this.workingHours = workingHours;
+    }
+
+    public int getNik() {
+        return this.nik;
+    }
+
+    public void setNik(int nik) {
+        this.nik = nik;
     }
 
     public int getSalary() {

@@ -1,6 +1,8 @@
 package models.orders;
 
 import models.products.Product;
+import models.users.Customer;
+import models.users.employees.Cashier;
 
 import java.util.HashMap;
 
@@ -9,12 +11,16 @@ public abstract class Order {
     private int quantity;
     private double price;
     private HashMap<Product, Integer> listItems;
+    private Customer cust;
+    private Cashier cash;
 
-    public Order(int orderID, int quantity, double price, HashMap<Product, Integer> listItems) {
+    public Order(int orderID, int quantity, double price, HashMap<Product, Integer> listItems, Customer cust, Cashier cash) {
         this.orderID = orderID;
         this.quantity = quantity;
         this.price = price;
         this.listItems = listItems;
+        this.cust = cust;
+        this.cash = cash;
     }
 
     public int getOrderID() {
@@ -49,8 +55,24 @@ public abstract class Order {
         this.listItems = listItems;
     }
 
+    public Customer getCust() {
+        return this.cust;
+    }
+
+    public void setCust(Customer cust) {
+        this.cust = cust;
+    }
+
+    public Cashier getCash() {
+        return this.cash;
+    }
+
+    public void setCash(Cashier cash) {
+        this.cash = cash;
+    }
+
     @Override
     public String toString() {
-        return this.orderID + " " + this.quantity + " " + this.price + " " + this.listItems.keySet(); // pake keySet buat ngambil productnya aja
+        return this.orderID + " " + this.quantity + " " + this.price + " " + this.listItems.keySet() + " " + this.cust.getName(); // pake keySet buat ngambil productnya aja
     }
 }

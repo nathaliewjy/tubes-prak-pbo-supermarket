@@ -1,7 +1,5 @@
 package models.products;
 
-import models.users.Supplier;
-
 import java.sql.Date;
 
 public class Food extends Product {
@@ -9,8 +7,8 @@ public class Food extends Product {
     private double calories;
     private String ingredients;
 
-    public Food(int weight, double calories, String ingredients, int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Supplier sup) {
-        super(prodID, brand, ProductCategory.FOOD, price, stockInStorage, stockInShelf, manufactureDate, expiryDate, sup);
+    public Food(int weight, double calories, String ingredients, int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+        super(prodID, brand, ProductCategory.FOOD, price, stockInStorage, stockInShelf, manufactureDate, expiryDate);
         this.weight = weight;
         this.calories = calories;
         this.ingredients = ingredients;

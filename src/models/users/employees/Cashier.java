@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class Cashier extends Employee {
 
-    public Cashier(int salary, Date hireDate, int workingHours, int userID, String name) {
-        super(salary, hireDate, workingHours, userID, name, Role.CASHIER);
+    public Cashier(int nik, int salary, Date hireDate, int workingHours, int userID, String name) {
+        super(nik, salary, hireDate, workingHours, userID, name, Role.CASHIER);
     }
 
     @Override

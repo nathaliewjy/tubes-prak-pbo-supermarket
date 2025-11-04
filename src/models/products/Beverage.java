@@ -1,16 +1,14 @@
 package models.products;
 
-import models.users.Supplier;
-
 import java.sql.Date;
 
 public class Beverage extends Product {
-    private double volume;
+    private int volume;
     private String flavor;
     private double sugar;
 
-    public Beverage(double volume, String flavor, double sugar, int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Supplier sup) {
-        super(prodID, brand, ProductCategory.FOOD, price, stockInStorage, stockInShelf, manufactureDate, expiryDate, sup);
+    public Beverage(int volume, String flavor, double sugar, int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+        super(prodID, brand, ProductCategory.BEVERAGE, price, stockInStorage, stockInShelf, manufactureDate, expiryDate);
         this.volume = volume;
         this.flavor = flavor;
         this.sugar = sugar;
@@ -20,7 +18,7 @@ public class Beverage extends Product {
         return this.volume;
     }
 
-    public void setVolume(double volume) {
+    public void setVolume(int volume) {
         this.volume = volume;
     }
 

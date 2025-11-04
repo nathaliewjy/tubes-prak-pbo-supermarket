@@ -7,19 +7,17 @@ import java.sql.Date;
 
 public class Transaction {
     private int transID;
-    private Customer cust;
-    private Cashier cash;
     private Date transDate;
     private double totalPrice;
     private PaymentMethod payMet;
+    private TransactionType transType;
 
-    public Transaction(int transID, Customer cust, Cashier cash, Date transDate, double totalPrice, PaymentMethod payMet) {
+    public Transaction(int transID, Date transDate, double totalPrice, PaymentMethod payMet, TransactionType transType) {
         this.transID = transID;
-        this.cust = cust;
-        this.cash = cash;
         this.transDate = transDate;
         this.totalPrice = totalPrice;
         this.payMet = payMet;
+        this.transType = transType;
     }
 
     public int getTransID() {
@@ -28,22 +26,6 @@ public class Transaction {
 
     public void setTransID(int transID) {
         this.transID = transID;
-    }
-
-    public Customer getCustomer() {
-        return this.cust;
-    }
-
-    public void setCustomer(Customer cust) {
-        this.cust = cust;
-    }
-
-    public Cashier getCashier() {
-        return this.cash;
-    }
-
-    public void setCashier(Cashier cash) {
-        this.cash = cash;
     }
 
     public Date getTransDate() {
@@ -72,7 +54,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return this.transID + " " +  this.cust.getName() + " " + this.cash.getName() + "" + this.transDate + "" + this.totalPrice + " " + this.payMet;
+        return this.transID + "" + this.transDate + "" + this.totalPrice + " " + this.payMet;
     }
 }
 
