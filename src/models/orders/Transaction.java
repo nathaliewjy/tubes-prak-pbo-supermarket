@@ -5,13 +5,15 @@ import java.util.UUID;
 
 public class Transaction {
     private UUID transID;
+    private Order order;
     private Date transDate;
     private double totalPrice;
     private PaymentMethod payMet;
     private TransactionType transType;
 
-    public Transaction(UUID transID, Date transDate, double totalPrice, PaymentMethod payMet, TransactionType transType) {
+    public Transaction(UUID transID, Order order, Date transDate, double totalPrice, PaymentMethod payMet, TransactionType transType) {
         this.transID = transID;
+        this.order =  order;
         this.transDate = transDate;
         this.totalPrice = totalPrice;
         this.payMet = payMet;
@@ -24,6 +26,14 @@ public class Transaction {
 
     public void setTransID(UUID transID) {
         this.transID = transID;
+    }
+
+    public Order getOrder()  {
+        return this.order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Date getTransDate() {
@@ -48,6 +58,14 @@ public class Transaction {
 
     public void setPaymentMethod(PaymentMethod payMet) {
         this.payMet = payMet;
+    }
+
+    public TransactionType getTransType() {
+        return this.transType;
+    }
+
+    public void setTransType(TransactionType transType) {
+        this.transType = transType;
     }
 
     @Override

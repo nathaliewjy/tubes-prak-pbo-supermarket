@@ -4,24 +4,21 @@ import models.products.Product;
 import models.users.Member;
 import models.users.employees.Cashier;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
 public abstract class Order {
     private UUID orderID;
-    private int quantity;
-    private double price;
-    private HashMap<Product, Integer> listItems;
     private Member mem;
-    private Cashier cash;
+    private Date orderDate;
+    private double totalAmount;
 
-    public Order(UUID orderID, int quantity, double price, HashMap<Product, Integer> listItems, Member mem, Cashier cash) {
+    public Order(UUID orderID, Member mem, Date orderDate, double totalAmount) {
         this.orderID = orderID;
-        this.quantity = quantity;
-        this.price = price;
-        this.listItems = listItems;
         this.mem = mem;
-        this.cash = cash;
+        this.orderDate = orderDate;
+        this.totalAmount = totalAmount;
     }
 
     public UUID getOrderID() {
@@ -32,30 +29,6 @@ public abstract class Order {
         this.orderID = orderID;
     }
 
-    public int getQuantity() {
-        return this.quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity  = quantity;
-    }
-
-    public double getPrice()  {
-        return this.price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public HashMap<Product, Integer> getListItems() {
-        return this.listItems;
-    }
-
-    public void setListItems(HashMap<Product, Integer> listItems) {
-        this.listItems = listItems;
-    }
-
     public Member getMem() {
         return this.mem;
     }
@@ -64,16 +37,24 @@ public abstract class Order {
         this.mem = mem;
     }
 
-    public Cashier getCash() {
-        return this.cash;
+    public Date getOrderDate() {
+        return this.orderDate;
     }
 
-    public void setCash(Cashier cash) {
-        this.cash = cash;
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public double getTotalAmount() {
+        return this.totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     @Override
     public String toString() {
-        return this.orderID + " " + this.quantity + " " + this.price + " " + this.listItems.keySet() + " " + this.mem.getName(); // pake keySet buat ngambil productnya aja
+        return this.orderID + " " + this.mem.getName() + " " + this.orderDate + " " + this.totalAmount;
     }
 }
