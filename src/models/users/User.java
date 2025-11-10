@@ -1,21 +1,23 @@
 package models.users;
 
+import java.util.UUID;
+
 public abstract class User {
-    private int userID;
+    private UUID userID;
     private String name;
     private Role role;
 
-    public User(int userID, String name, Role role) {
+    public User(UUID userID, String name, Role role) {
         this.userID = userID;
         this.name = name;
         this.role = role;
     }
 
-    public int getUserID() {
+    public UUID getUserID() {
         return this.userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
     }
 

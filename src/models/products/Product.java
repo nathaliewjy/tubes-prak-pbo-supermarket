@@ -1,9 +1,10 @@
 package models.products;
 
 import java.util.Date;
+import java.util.UUID;
 
 public abstract class Product {
-    private int prodID;
+    private UUID prodID;
     private String brand;
     private ProductCategory category;
     private double price;
@@ -12,7 +13,7 @@ public abstract class Product {
     private Date manufactureDate;
     private Date expiryDate;
 
-    public Product(int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+    public Product(UUID prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         this.prodID = prodID;
         this.brand = brand;
         this.category = category;
@@ -23,11 +24,11 @@ public abstract class Product {
         this.expiryDate = expiryDate;
     }
 
-    public int getProdID() {
+    public UUID getProdID() {
         return this.prodID;
     }
 
-    public void setProdID(int prodID) {
+    public void setProdID(UUID prodID) {
         this.prodID = prodID;
     }
 

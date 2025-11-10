@@ -16,3 +16,7 @@
 
 3 November 2025 20.23 :
 - hapus"in child Product
+
+10 November 2025 11.56 :
+- customer dihapus, sisa member
+- ID diganti ke UUID, tiap table ada UUID

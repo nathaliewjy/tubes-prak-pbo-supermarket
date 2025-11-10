@@ -1,5 +1,5 @@
 package models.orders;
 
 public enum PaymentStatus {
-    PAID, FAILED
+    SUCCESSFUL, PENDING, FAILED
 }

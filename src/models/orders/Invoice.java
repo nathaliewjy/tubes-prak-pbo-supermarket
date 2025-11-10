@@ -6,7 +6,6 @@ import java.sql.Date;
 import java.util.HashMap;
 
 public class Invoice {
-    private int invID;
     private Transaction trans;
     private PaymentStatus status;
     private int quantity;
@@ -15,9 +14,7 @@ public class Invoice {
     private Date transDate;
     private PaymentMethod payMet;
 
-
-    public Invoice(int invID, Transaction trans, PaymentStatus status, int quantity, double totalPrice, HashMap<Product, Integer> listItems, Date transDate) {
-        this.invID = invID;
+    public Invoice(Transaction trans, PaymentStatus status, int quantity, double totalPrice, HashMap<Product, Integer> listItems, Date transDate) {
         this.trans = trans;
         this.status = status;
         this.quantity = quantity;
@@ -25,15 +22,6 @@ public class Invoice {
         this.listItems = listItems;
         this.transDate = transDate;
         this.payMet = payMet;
-    }
-
-
-    public int getInvID() {
-        return this.invID;
-    }
-
-    public void setInvID(int invID) {
-        this.invID = invID;
     }
 
     public Transaction getTrans() {
@@ -94,7 +82,7 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return this.invID + " " + this.trans + "" + this.status + " " + this.quantity + " " + this.totalPrice + "" + this.listItems.keySet() + " " + this.transDate + " " + this.payMet;
+        return this.trans + "" + this.status + " " + this.quantity + " " + this.totalPrice + "" + this.listItems.keySet() + " " + this.transDate + " " + this.payMet;
     }
 
 }

@@ -8,13 +8,13 @@ import java.sql.Time;
 public class Presensi {
     private Date date;
     private Time clockOut;
-    private Presensi pres;
+    private StatusPresensi status;
     private Employee emp;
 
-    public Presensi(Date date, Time clockOut, Presensi pres, Employee emp) {
+    public Presensi(Date date, Time clockOut, StatusPresensi status, Employee emp) {
         this.date = date;
         this.clockOut = clockOut;
-        this.pres = pres;
+        this.status = status;
         this.emp = emp;
     }
 
@@ -34,17 +34,17 @@ public class Presensi {
         this.clockOut = clockOut;
     }
 
-    public Presensi getPres() {
-        return this.pres;
+    public StatusPresensi getStatus() {
+        return this.status;
     }
 
-    public void setPres(Presensi pres) {
-        this.pres = pres;
+    public void setStatus(StatusPresensi status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
-        return this.date + " " + this.clockOut + " " + this.pres;
+        return this.date + " " + this.clockOut + " " + this.status;
     }
 
 }

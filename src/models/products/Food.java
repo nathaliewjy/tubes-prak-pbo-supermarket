@@ -1,13 +1,14 @@
 package models.products;
 
 import java.sql.Date;
+import java.util.UUID;
 
 public class Food extends Product {
     private int weight;
     private double calories;
     private String ingredients;
 
-    public Food(int weight, double calories, String ingredients, int prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+    public Food(int weight, double calories, String ingredients, UUID prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         super(prodID, brand, ProductCategory.FOOD, price, stockInStorage, stockInShelf, manufactureDate, expiryDate);
         this.weight = weight;
         this.calories = calories;

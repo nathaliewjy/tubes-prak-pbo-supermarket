@@ -1,33 +1,34 @@
 package models.orders;
 
 import models.products.Product;
-import models.users.Customer;
+import models.users.Member;
 import models.users.employees.Cashier;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public abstract class Order {
-    private int orderID;
+    private UUID orderID;
     private int quantity;
     private double price;
     private HashMap<Product, Integer> listItems;
-    private Customer cust;
+    private Member mem;
     private Cashier cash;
 
-    public Order(int orderID, int quantity, double price, HashMap<Product, Integer> listItems, Customer cust, Cashier cash) {
+    public Order(UUID orderID, int quantity, double price, HashMap<Product, Integer> listItems, Member mem, Cashier cash) {
         this.orderID = orderID;
         this.quantity = quantity;
         this.price = price;
         this.listItems = listItems;
-        this.cust = cust;
+        this.mem = mem;
         this.cash = cash;
     }
 
-    public int getOrderID() {
+    public UUID getOrderID() {
         return this.orderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(UUID orderID) {
         this.orderID = orderID;
     }
 
@@ -55,12 +56,12 @@ public abstract class Order {
         this.listItems = listItems;
     }
 
-    public Customer getCust() {
-        return this.cust;
+    public Member getMem() {
+        return this.mem;
     }
 
-    public void setCust(Customer cust) {
-        this.cust = cust;
+    public void setMem(Member mem) {
+        this.mem = mem;
     }
 
     public Cashier getCash() {
@@ -73,6 +74,6 @@ public abstract class Order {
 
     @Override
     public String toString() {
-        return this.orderID + " " + this.quantity + " " + this.price + " " + this.listItems.keySet() + " " + this.cust.getName(); // pake keySet buat ngambil productnya aja
+        return this.orderID + " " + this.quantity + " " + this.price + " " + this.listItems.keySet() + " " + this.mem.getName(); // pake keySet buat ngambil productnya aja
     }
 }

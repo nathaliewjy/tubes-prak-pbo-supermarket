@@ -1,18 +1,16 @@
 package models.orders;
 
-import models.users.Customer;
-import models.users.employees.Cashier;
-
 import java.sql.Date;
+import java.util.UUID;
 
 public class Transaction {
-    private int transID;
+    private UUID transID;
     private Date transDate;
     private double totalPrice;
     private PaymentMethod payMet;
     private TransactionType transType;
 
-    public Transaction(int transID, Date transDate, double totalPrice, PaymentMethod payMet, TransactionType transType) {
+    public Transaction(UUID transID, Date transDate, double totalPrice, PaymentMethod payMet, TransactionType transType) {
         this.transID = transID;
         this.transDate = transDate;
         this.totalPrice = totalPrice;
@@ -20,11 +18,11 @@ public class Transaction {
         this.transType = transType;
     }
 
-    public int getTransID() {
+    public UUID getTransID() {
         return this.transID;
     }
 
-    public void setTransID(int transID) {
+    public void setTransID(UUID transID) {
         this.transID = transID;
     }
 

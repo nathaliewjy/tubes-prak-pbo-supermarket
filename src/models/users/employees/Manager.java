@@ -4,11 +4,12 @@ import models.users.Employee;
 import models.users.Role;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Manager extends Employee {
     private String department;
 
-    public Manager(String department, int nik, int salary, Date hireDate, int workingHours, int userID, String name) {
+    public Manager(String department, int nik, int salary, Date hireDate, int workingHours, UUID userID, String name) {
         super(nik, salary, hireDate, workingHours, userID, name, Role.MANAGER);
         this.department = department;
     }
