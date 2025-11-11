@@ -3,7 +3,7 @@ package models.products;
 import java.util.Date;
 import java.util.UUID;
 
-public abstract class Product {
+public class Product {
     private UUID prodID;
     private String brand;
     private ProductCategory category;

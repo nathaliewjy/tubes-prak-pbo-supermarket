@@ -8,53 +8,42 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-public abstract class Order {
+public class Order {
     private UUID orderID;
-    private Member mem;
+    private UUID memberID;
     private Date orderDate;
-    private double totalAmount;
+    private double totalPrice;
+    private HashMap<Product, Integer> listItems;
 
-    public Order(UUID orderID, Member mem, Date orderDate, double totalAmount) {
-        this.orderID = orderID;
-        this.mem = mem;
-        this.orderDate = orderDate;
-        this.totalAmount = totalAmount;
+
+    public Order(UUID member, Date orderDate, HashMap<Product, Integer> listItems) {
+        this.orderID = UUID.randomUUID();
+        this.memberID = member;
+        this.listItems = listItems;
     }
 
     public UUID getOrderID() {
         return this.orderID;
     }
 
-    public void setOrderID(UUID orderID) {
-        this.orderID = orderID;
+    public UUID getMemberID() {
+        return this.memberID;
     }
 
-    public Member getMem() {
-        return this.mem;
+    public HashMap<Product, Integer> getListItems() {
+        return listItems;
     }
 
-    public void setMem(Member mem) {
-        this.mem = mem;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public Date getOrderDate() {
-        return this.orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public double getTotalAmount() {
-        return this.totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override
     public String toString() {
-        return this.orderID + " " + this.mem.getName() + " " + this.orderDate + " " + this.totalAmount;
+        return this.orderID + " " + this.memberID + " " + this.orderDate + " " + this.totalPrice;
     }
 }
