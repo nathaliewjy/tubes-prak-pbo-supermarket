@@ -1,5 +1,5 @@
 package models.presensi;
 
-public enum StatusPresensi {
+public enum StatusKehadiran {
     HADIR, IZIN, SAKIT, ALPHA
 }

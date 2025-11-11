@@ -4,18 +4,27 @@ import models.users.Employee;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.UUID;
 
 public class Presensi {
+    private UUID presensiID;
     private Date date;
-    private Time clockOut;
-    private StatusPresensi status;
+    private StatusKehadiran status;
     private Employee emp;
 
-    public Presensi(Date date, Time clockOut, StatusPresensi status, Employee emp) {
+    public Presensi(UUID presensiID, Date date, Time clockOut, StatusKehadiran status, Employee emp) {
+        this.presensiID = presensiID;
         this.date = date;
-        this.clockOut = clockOut;
         this.status = status;
         this.emp = emp;
+    }
+
+    public UUID getPresensiID() {
+        return this.presensiID;
+    }
+
+    public void setPresensiID(UUID presensiID) {
+        this.presensiID = presensiID;
     }
 
     public Date getDate() {
@@ -26,25 +35,17 @@ public class Presensi {
         this.date = date;
     }
 
-    public Time getClockOut() {
-        return this.clockOut;
-    }
-
-    public void setClockOut(Time clockOut) {
-        this.clockOut = clockOut;
-    }
-
-    public StatusPresensi getStatus() {
+    public StatusKehadiran getStatus() {
         return this.status;
     }
 
-    public void setStatus(StatusPresensi status) {
+    public void setStatus(StatusKehadiran status) {
         this.status = status;
     }
 
     @Override
     public String toString() {
-        return this.date + " " + this.clockOut + " " + this.status;
+        return this.date + " " + this.status + " " + this.emp.getName();
     }
 
 }

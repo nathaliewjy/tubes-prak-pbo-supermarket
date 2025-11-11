@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class Stocker extends Employee {
 
-    public Stocker(int nik, int salary, Date hireDate, int workingHours, UUID userID, String name) {
-        super(nik, salary, hireDate, workingHours, userID, name, Role.STOCKER);
+    public Stocker(int salary, Date hireDate, int workingHours, int nik, UUID userID, String name) {
+        super(salary, hireDate, workingHours, nik, userID, name, Role.STOCKER);
     }
 
     @Override
