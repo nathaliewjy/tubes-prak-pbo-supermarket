@@ -12,7 +12,7 @@ public class Presensi {
     private StatusKehadiran status;
     private UUID empID;
 
-    public Presensi( Date date, Time clockOut, StatusKehadiran status, UUID empID) {
+    public Presensi(Date date, Time clockOut, StatusKehadiran status, UUID empID) {
         this.presensiID = UUID.randomUUID();
         this.date = date;
         this.status = status;
@@ -45,7 +45,7 @@ public class Presensi {
 
     @Override
     public String toString() {
-        return this.date + " " + this.status + " " + this.empID.getName();
+        return this.date + " " + this.status + " " + this.empID;
     }
 
 }

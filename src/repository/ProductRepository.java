@@ -6,7 +6,6 @@ import models.products.Product;
 import models.users.Employee;
 
 public class ProductRepository {
-    ArrayList 
 
     public Product findByNIK(String nik){
         Product ProductFound = null;
@@ -15,14 +14,15 @@ public class ProductRepository {
     }
 
     public void addProduct(Product e){
-        productList.add(e);
+        //work here
     }
 
     public void deleteProduct(){
         //work here
     }
 
-    public ArrayList<Product> getProductList() {
-        return ProductList;
+    public ArrayList<Product> getProductsByCategory() {
+        ArrayList<Product> productList = new ArrayList<>();
+        return productList;
     }
 }

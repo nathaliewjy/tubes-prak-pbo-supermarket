@@ -6,10 +6,10 @@ public class Members extends User {
     private String phone;
     private int point;
 
-    public Members(String phone, int point, UUID userID, String name) {
+    public Members(String phone, String name) {
         super(name, Role.MEMBER);
         this.phone = phone;
-        this.point = point;
+        this.point = 0;
     }
 
     public String getPhone() {
