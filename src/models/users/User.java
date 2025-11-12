@@ -7,8 +7,8 @@ public abstract class User {
     private String name;
     private Role role;
 
-    public User(UUID userID, String name, Role role) {
-        this.userID = userID;
+    public User(String name, Role role) {
+        this.userID = UUID.randomUUID();
         this.name = name;
         this.role = role;
     }

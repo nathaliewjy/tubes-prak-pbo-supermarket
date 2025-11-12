@@ -25,3 +25,8 @@
 10 November 20.44 :
 - samain attributes di db & models
 - connect db done
+
+11 November :
+- rapihin konsep order, transaction, invoice (WIP)
+- ubah product sama order jadi ga abstract (karena skrg productnya lgsg aja)
+- delete trans type (dekoratif)

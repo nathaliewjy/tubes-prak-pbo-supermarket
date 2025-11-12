@@ -7,10 +7,10 @@ public abstract class Employee extends User {
     private int salary;
     private Date hireDate;
     private int workingHours;
-    private int nik;
+    private String nik;
 
-    public Employee(int salary, Date hireDate, int workingHours, int nik, UUID userID, String name, Role role) {
-        super(userID, name, role);
+    public Employee(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Role role) {
+        super(name, role);
         this.salary = salary;
         this.hireDate = hireDate;
         this.workingHours = workingHours;
@@ -29,10 +29,6 @@ public abstract class Employee extends User {
         return this.hireDate;
     }
 
-    public void setHireDate(Date hireDate) {
-        this.hireDate = hireDate;
-    }
-
     public int getWorkingHours() {
         return this.workingHours;
     }
@@ -41,12 +37,8 @@ public abstract class Employee extends User {
         this.workingHours = workingHours;
     }
 
-    public int getNik() {
+    public String getNik() {
         return this.nik;
-    }
-
-    public void setNik(int nik) {
-        this.nik = nik;
     }
 
     @Override
