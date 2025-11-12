@@ -13,8 +13,8 @@ public class Product {
     private Date manufactureDate;
     private Date expiryDate;
 
-    public Product(UUID prodID, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
-        this.prodID = prodID;
+    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+        this.prodID = UUID.randomUUID();
         this.brand = brand;
         this.category = category;
         this.price = price;

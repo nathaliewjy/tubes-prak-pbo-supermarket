@@ -10,13 +10,13 @@ public class Presensi {
     private UUID presensiID;
     private Date date;
     private StatusKehadiran status;
-    private Employee emp;
+    private UUID empID;
 
-    public Presensi(UUID presensiID, Date date, Time clockOut, StatusKehadiran status, Employee emp) {
-        this.presensiID = presensiID;
+    public Presensi( Date date, Time clockOut, StatusKehadiran status, UUID empID) {
+        this.presensiID = UUID.randomUUID();
         this.date = date;
         this.status = status;
-        this.emp = emp;
+        this.empID = empID;
     }
 
     public UUID getPresensiID() {
@@ -45,7 +45,7 @@ public class Presensi {
 
     @Override
     public String toString() {
-        return this.date + " " + this.status + " " + this.emp.getName();
+        return this.date + " " + this.status + " " + this.empID.getName();
     }
 
 }

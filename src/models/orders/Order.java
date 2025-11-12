@@ -1,7 +1,7 @@
 package models.orders;
 
 import models.products.Product;
-import models.users.Member;
+import models.users.Members;
 import models.users.employees.Cashier;
 
 import java.sql.Date;
@@ -16,9 +16,9 @@ public class Order {
     private HashMap<Product, Integer> listItems;
 
 
-    public Order(UUID member, Date orderDate, HashMap<Product, Integer> listItems) {
+    public Order(UUID memberID, Date orderDate, HashMap<Product, Integer> listItems) {
         this.orderID = UUID.randomUUID();
-        this.memberID = member;
+        this.memberID = memberID;
         this.listItems = listItems;
     }
 
