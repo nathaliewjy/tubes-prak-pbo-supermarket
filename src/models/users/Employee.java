@@ -1,6 +1,6 @@
 package models.users;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.UUID;
 
 public abstract class Employee extends User {
