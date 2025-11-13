@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Manager extends Employee {
     private String department;
 
-    public Manager(String department, int salary, Date hireDate, int workingHours, int nik, UUID userID, String name) {
+    public Manager(String department, int salary, Date hireDate, int workingHours, String nik, UUID userID, String name) {
         super(salary, hireDate, workingHours, nik, userID, name, Role.MANAGER);
         this.department = department;
     }
