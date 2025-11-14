@@ -1,10 +1,8 @@
 package repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import models.users.Employee;
 import models.users.Role;
@@ -28,7 +26,7 @@ public class EmployeeRepository implements IEmployeeRepository {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                System.out.println("Employee ketemu");
+                employeeFound = resultSetEmployee(rs);
             }
 
         } catch (SQLException e) {
@@ -39,7 +37,7 @@ public class EmployeeRepository implements IEmployeeRepository {
     }
 
     @Override
-    public void addEmployee(Employee e, String department){
+    public void addEmployee(Employee e){
         String sqlUsers = "INSERT INTO users (UserID, Name, Role) VALUES (?, ?, ?)";
         String sqlEmployee = "INSERT INTO employee (EmployeeID, Salary, HireDate, WorkingHours, NIK) VALUES (?, ?, ?, ?, ?)";
         String sqlEmpRole = "";
@@ -71,8 +69,8 @@ public class EmployeeRepository implements IEmployeeRepository {
 
             PreparedStatement stmtRole = conn.prepareStatement(sqlEmpRole);
             stmtRole.setString(1, e.getUserID().toString());
-            if (e.getRole() == Role.MANAGER) {
-                stmtRole.setString(2, department);
+            if (e instanceof Manager) {
+                stmtRole.setString(2, ((Manager) e).getDepartment());
             }
             stmtRole.executeUpdate();
         } catch (SQLException e2) {
@@ -109,11 +107,39 @@ public class EmployeeRepository implements IEmployeeRepository {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                // employeeList.add()
+                Employee e = resultSetEmployee(rs);
+                employeeList.add(e);
             }
         } catch (SQLException e4) {
             e4.printStackTrace();
         }
         return employeeList;
+    }
+
+    private Employee resultSetEmployee(ResultSet rs) throws SQLException {
+        UUID userID = UUID.fromString(rs.getString("UserID"));
+        String name = rs.getString("Name");
+        Role role = Role.valueOf(rs.getString("Role"));
+        int salary = rs.getInt("Salary");
+        Date hireDate = rs.getDate("HireDate");
+        int workingHours = rs.getInt("WorkingHours");
+        String nik = rs.getString("NIK");
+
+        Employee e = null;
+
+        if (role == Role.CASHIER) {
+            e = new Cashier(salary, hireDate, workingHours, nik, null, name);
+        } else if (role == Role.MANAGER) {
+            String department = rs.getString("Department");
+            e = new Manager(department, salary, hireDate, workingHours, nik, null, name);
+        } else if (role == Role.STOCKER) {
+            e = new Stocker(salary, hireDate, workingHours, nik, null, name);
+        }
+
+        if (e != null) {
+            e.setUserID(userID);
+        }
+
+        return e;
     }
 }

@@ -8,7 +8,7 @@ public interface IEmployeeRepository {
 
     Employee findByNik(String nik);
 
-    void addEmployee(Employee e, String department);
+    void addEmployee(Employee e);
 
     void deleteEmployee(String nik);
 
