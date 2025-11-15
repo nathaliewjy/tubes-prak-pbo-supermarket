@@ -3,6 +3,7 @@ package repository;
 import models.users.Members;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public interface IMembersRepository {
 
@@ -13,4 +14,6 @@ public interface IMembersRepository {
     void deleteMembers(String phone);
 
     ArrayList<Members> getAllMembers();
+
+    void updatePoints(UUID memberID, int addPoints);
 }

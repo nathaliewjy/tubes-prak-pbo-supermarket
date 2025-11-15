@@ -109,4 +109,22 @@ public class MembersRepository implements IMembersRepository{
 
         return m;
     }
+
+    @Override
+    public void updatePoints(UUID memberID, int addPoints) {
+        String sql = "UPDATE members SET Points = ? WHERE MemberID = ?";
+
+        try {
+            Connection conn = Database.connect();
+
+            PreparedStatement stmt =  conn.prepareStatement(sql);
+            stmt.setInt(1, addPoints);
+            stmt.setString(2, memberID.toString());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e5) {
+            e5.printStackTrace();
+        }
+    }
 }
