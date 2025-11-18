@@ -12,8 +12,9 @@ public class Product {
     private int stockInShelf;
     private Date manufactureDate;
     private Date expiryDate;
+    private Date deletedAt;
 
-    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Date deletedAt) {
         this.prodID = UUID.randomUUID();
         this.brand = brand;
         this.category = category;
@@ -22,6 +23,7 @@ public class Product {
         this.stockInShelf = stockInShelf;
         this.manufactureDate = manufactureDate;
         this.expiryDate = expiryDate;
+        this.deletedAt = deletedAt;
     }
 
     public UUID getProdID() {
@@ -88,8 +90,16 @@ public class Product {
         this.expiryDate = Product.this.expiryDate;
     }
 
+    public Date getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     @Override
     public String toString() {
-        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.manufactureDate + " " + this.expiryDate;
+        return this.prodID + " " + this.brand + " " + this.category + " " + this.price + " " + this.stockInStorage + " " + this.stockInShelf + " " + this.manufactureDate + " " + this.expiryDate + " " + this.deletedAt;
     }
 }

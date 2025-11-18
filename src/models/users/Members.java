@@ -1,13 +1,14 @@
 package models.users;
 
+import java.sql.Date;
 import java.util.UUID;
 
 public class Members extends User {
     private String phone;
     private int point;
 
-    public Members(String phone, String name) {
-        super(name, Role.MEMBER);
+    public Members(String phone, String name, Date deletedAt) {
+        super(name, Role.MEMBER, deletedAt);
         this.phone = phone;
         this.point = 0;
     }
