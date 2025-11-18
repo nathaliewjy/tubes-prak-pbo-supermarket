@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class Cashier extends Employee {
 
-    public Cashier(Date deletedAt, int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Date deletedAt) {
+    public Cashier(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Date deletedAt) {
         super(salary, hireDate, workingHours, nik, userID, name, Role.CASHIER, deletedAt);
     }
 

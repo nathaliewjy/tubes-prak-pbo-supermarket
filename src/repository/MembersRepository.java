@@ -1,9 +1,6 @@
 package repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -101,8 +98,9 @@ public class MembersRepository implements IMembersRepository{
         String name = rs.getString("Name");
         String phone = rs.getString("Phone");
         int points = rs.getInt("Points");
+        Date deletedAt = rs.getDate("deletedAt");
 
-        Members m = new Members(phone, name);
+        Members m = new Members(phone, name, deletedAt);
 
         m.setUserID(userID);
         m.setPoint(points);

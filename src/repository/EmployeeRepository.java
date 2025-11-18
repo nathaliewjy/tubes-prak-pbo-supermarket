@@ -124,16 +124,17 @@ public class EmployeeRepository implements IEmployeeRepository {
         Date hireDate = rs.getDate("HireDate");
         int workingHours = rs.getInt("WorkingHours");
         String nik = rs.getString("NIK");
+        Date deletedAt = rs.getDate("deletedAt");
 
         Employee e = null;
 
         if (role == Role.CASHIER) {
-            e = new Cashier(salary, hireDate, workingHours, nik, null, name);
+            e = new Cashier(salary, hireDate, workingHours, nik, null, name, deletedAt);
         } else if (role == Role.MANAGER) {
             String department = rs.getString("Department");
-            e = new Manager(department, salary, hireDate, workingHours, nik, null, name);
+            e = new Manager(department, salary, hireDate, workingHours, nik, null, name, deletedAt);
         } else if (role == Role.STOCKER) {
-            e = new Stocker(salary, hireDate, workingHours, nik, null, name);
+            e = new Stocker(salary, hireDate, workingHours, nik, null, name, deletedAt);
         }
 
         if (e != null) {
