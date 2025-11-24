@@ -1,6 +1,6 @@
 package models.users;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.UUID;
 
 public abstract class Employee extends User {
@@ -9,8 +9,8 @@ public abstract class Employee extends User {
     private int workingHours;
     private String nik;
 
-    public Employee(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Role role) {
-        super(name, role);
+    public Employee(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Role role, Date deletedAt) {
+        super(name, role, deletedAt);
         this.salary = salary;
         this.hireDate = hireDate;
         this.workingHours = workingHours;

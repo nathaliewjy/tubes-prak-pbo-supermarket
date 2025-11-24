@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    public static final String DATABASE = "minimarket_ppbo";
+    public static final String DATABASE = "minimarket";
     public static final String PORT = "3306";
     public static final String HOST = "localhost";
     public static final String USER = "root";
