@@ -119,34 +119,30 @@ public class ProductRepository implements IProductRepository {
             e.printStackTrace();
         }
     }
-  
-  public ArrayList<Product> getAllProductsByExpired(){
+
+    public ArrayList<Product> getAllProductsByExpired() {
         ArrayList<Product> listProductExpired = new ArrayList<>();
         String sql = "SELECT * FROM products WHERE expired_date < NOW()";
-        PreparedStatement pstmt = null;
         ResultSet rs = null;
-        try{
-            conn = Database.connect();
-            pstmt = conn.prepareStatement(sql);
+        try (Connection conn = Database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             rs = pstmt.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 Product product = new Product(
                         rs.getString("Brand"),
-                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE, // Prdouct Category enum,
+                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE, 
                         rs.getDouble("PRICE"),
                         rs.getInt("StockInStorage"),
                         rs.getInt("StockInShelf"),
                         rs.getDate("ManufactureDate"),
-                        rs.getDate("ExpiryDate")
-                        );
+                        rs.getDate("ExpiryDate"));
                 listProductExpired.add(product);
             }
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.getMessage();
 
         }
         return listProductExpired;
-
+    }
 }

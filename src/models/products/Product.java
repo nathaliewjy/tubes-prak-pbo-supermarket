@@ -14,7 +14,7 @@ public class Product {
     private Date expiryDate;
     private Date deletedAt;
 
-    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Date deletedAt) {
+    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         this.prodID = UUID.randomUUID();
         this.brand = brand;
         this.category = category;
@@ -23,7 +23,6 @@ public class Product {
         this.stockInShelf = stockInShelf;
         this.manufactureDate = manufactureDate;
         this.expiryDate = expiryDate;
-        this.deletedAt = deletedAt;
     }
 
     public UUID getProdID() {

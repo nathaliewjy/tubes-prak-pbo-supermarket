@@ -32,7 +32,7 @@ public class InventoryController {
             int quantity = listItems.get(p);
             int stockInShelf = p.getStockInShelf() - quantity;
             p.setStockInShelf(stockInShelf);
-            productRepository.updateProduct(p);
+            productRepository.updateProductStock(p);
         }
     }
 
