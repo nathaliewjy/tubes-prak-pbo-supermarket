@@ -12,7 +12,7 @@ public class Presensi {
     private StatusKehadiran status;
     private UUID empID;
 
-    public Presensi(Date date, Time clockOut, StatusKehadiran status, UUID empID) {
+    public Presensi(Date date, StatusKehadiran status, UUID empID) {
         this.presensiID = UUID.randomUUID();
         this.date = date;
         this.status = status;
@@ -41,6 +41,10 @@ public class Presensi {
 
     public void setStatus(StatusKehadiran status) {
         this.status = status;
+    }
+
+    public UUID getEmpID() {
+        return empID;
     }
 
     @Override
