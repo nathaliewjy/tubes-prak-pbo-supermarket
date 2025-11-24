@@ -1,8 +1,6 @@
 package models.orders;
 
 import models.products.Product;
-import models.users.Members;
-import models.users.employees.Cashier;
 
 import java.sql.Date;
 import java.util.HashMap;
