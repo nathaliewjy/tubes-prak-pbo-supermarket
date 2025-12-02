@@ -61,4 +61,26 @@ public class PresensiRepository implements IPresensiRepository {
         }
         return presensiList;
     }
+
+    @Override
+    public int countPresensi(UUID employeeID) {
+        int totalPres = 0;
+
+        String sql = "SELECT COUNT(*) AS Total_Presensi FROM presensi WHERE EmployeeID = ? AND StatusKehadiran = 'HADIR'";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, employeeID.toString());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalPres = rs.getInt("Total_Presensi");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalPres;
+    }
 }
