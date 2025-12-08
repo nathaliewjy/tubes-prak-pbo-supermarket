@@ -9,8 +9,18 @@ public abstract class Employee extends User {
     private int workingHours;
     private String nik;
 
-    public Employee(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Role role, Date deletedAt) {
+    public Employee(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Role role,
+            Date deletedAt) {
         super(name, role, deletedAt);
+        this.salary = salary;
+        this.hireDate = hireDate;
+        this.workingHours = workingHours;
+        this.nik = nik;
+    }
+
+    public Employee(UUID userID, String name, Role role, Date deletedAt, int salary, Date hireDate, int workingHours,
+            String nik) {
+        super(userID, name, role, deletedAt);
         this.salary = salary;
         this.hireDate = hireDate;
         this.workingHours = workingHours;

@@ -1,8 +1,10 @@
 package repository;
 
 import models.users.Employee;
+import models.users.Role;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public interface IEmployeeRepository {
 
@@ -13,4 +15,12 @@ public interface IEmployeeRepository {
     void deleteEmployee(String nik);
 
     ArrayList<Employee> getAllEmployee();
+
+    void updateJobdesk(UUID employeeID, String jobdesk);
+
+    void changeRole(UUID employeeID, Role oldRole, Role newRole);
+
+    void updateEmployee(Employee e);
+
+    Employee findById(UUID employeeID);
 }

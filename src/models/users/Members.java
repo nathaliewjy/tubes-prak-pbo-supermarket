@@ -13,6 +13,12 @@ public class Members extends User {
         this.point = 0;
     }
 
+    public Members(UUID userID, String name, Date deletedAt, String phone, int point) {
+        super(userID, name, Role.MEMBER, deletedAt);
+        this.phone = phone;
+        this.point = point;
+    }
+
     public String getPhone() {
         return this.phone;
     }
