@@ -10,14 +10,22 @@ import models.orders.PaymentMethod;
 import models.orders.Transaction;
 import models.products.Product;
 import models.users.Employee;
+import models.users.Members;
 import repository.IEmployeeRepository;
+import repository.IMembersRepository;
 import repository.IOrderRepository;
+import repository.IProductRepository;
 import repository.ITransactionRepository;
+import repository.MembersRepository;
 
 public class PosController implements IPosController {
     private IOrderRepository orderRepository;
     private ITransactionRepository transactionRepository;
     private IEmployeeRepository employeeRepository;
+    private IMembersRepository membersRepository;
+    private IProductRepository productRepository;
+    private HashMap<Product, Integer> currentCartItems = new HashMap<>();
+    private UUID currentMemberID = null;
     private double startingCashAmount;
     private double currentCashAmount;
 
@@ -42,35 +50,58 @@ public class PosController implements IPosController {
     }
 
     @Override
-    public void initializeSession() {
-        
+    public void initializeSession(double startingCashAmount) {
+        this.startingCashAmount = startingCashAmount;
+        this.currentCashAmount = startingCashAmount;
+    }
+
+    @Override
+    public void addMemberToSale(String phoneNumber) {
+        Members m = membersRepository.findByPhone(phoneNumber);
+        if (m != null) {
+            this.currentMemberID = m.getUserID();
+        }
+    }
+
+    @Override
+    public void addItemToCart(String sku, int quantity) {
+        Product p = productRepository.findProductBySKU(sku);
+
+        if (p != null) {
+            if (this.currentCartItems.containsKey(p)) {
+                this.currentCartItems.put(p, this.currentCartItems.get(p) + quantity);
+            } else {
+                this.currentCartItems.put(p, quantity);
+            }
+        }
+    }
+
+    @Override
+    public void addItemToCart(String sku) {
+        addItemToCart(sku, 1);
     }
 
     @Override
     public void createOrder(UUID memberUuid) {
-        HashMap<Product, Integer> listItems = new HashMap<>();
-
-        Order m = new Order(memberUuid, listItems);
+        Order currentOrder = new Order(memberUuid, this.currentCartItems);
         double totalAmount = 0;
-        for (Product p : m.getListItems().keySet()) {
-            totalAmount += p.getPrice() * m.getListItems().get(p); // dapetin harga * quantity
+        for (Product p : currentOrder.getListItems().keySet()) {
+            totalAmount += p.getPrice() * currentOrder.getListItems().get(p); // dapetin harga * quantity
         }
-        m.setTotalPrice(totalAmount);
-        orderRepository.addOrder(m);
-
+        currentOrder.setTotalPrice(totalAmount);
+        orderRepository.addOrder(currentOrder);
     }
 
     @Override
     public void createTransaction(UUID orderID, double amountToPay, PaymentMethod payMet) {
-
         Transaction m = new Transaction(orderID, amountToPay, payMet);
         transactionRepository.addTransaction(m);
+
     }
 
     @Override
     public void endSession() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endSession'");
+        
     }
 
     public double getStartingCashAmount() {
@@ -81,6 +112,7 @@ public class PosController implements IPosController {
         this.startingCashAmount = startingCashAmount;
     }
 
+    @Override
     public double getCurrentCashAmount() {
         return currentCashAmount;
     }
