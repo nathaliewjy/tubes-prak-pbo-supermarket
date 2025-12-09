@@ -22,7 +22,7 @@ public class OrderRepository implements IOrderRepository {
     }
 
     @Override
-    public void addOrder(Order m) {
+    public void addOrder(Order order) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
         PreparedStatement pstmt2 = null;
@@ -30,23 +30,26 @@ public class OrderRepository implements IOrderRepository {
         String sqlIntoOrders = "INSERT INTO orders(OrderID,MemberID,OrderDate,TotalAmount) VALUES(?,?,?,?)";
         String sqlIntoOrdersProduct = "INSERT INTO order_product(OrderID,ProductID,Quantity) VALUES(?,?,?)";
 
-        double totalPrice = m.getTotalPrice();
         try {
             pstmt = conn.prepareStatement(sqlIntoOrders);
-            pstmt.setString(1, m.getOrderID().toString());
-            pstmt.setString(2, m.getMemberID().toString());
-            pstmt.setDate(3, m.getOrderDate());
-            pstmt.setDouble(4, m.getTotalPrice());
+            pstmt.setString(1, order.getOrderID().toString());
+            if (order.getMemberID() != null) {
+                pstmt.setString(2, order.getMemberID().toString());
+            } else {
+                pstmt.setNull(2, java.sql.Types.NULL);
+            }
+            pstmt.setObject(3, order.getOrderDate());
+            pstmt.setDouble(4, order.getTotalPrice());
             pstmt.executeUpdate(); // insert ke table orders
             pstmt2 = conn.prepareStatement(sqlIntoOrdersProduct);
-            for (Map.Entry<Product, Integer> entry : m.getListItems().entrySet()) { // buat dapetin quantity dari suatu
-                                                                                    // produk
+            for (Map.Entry<Product, Integer> entry : order.getListItems().entrySet()) {
+                // buat dapetin quantity dari suatu produk
                 // ngeloop tiap produk yang dipesan dalam order,
                 // trs ngambil quantity tiap produk
                 // quantity bwt isi tabel order_product.quantity
                 Product p = entry.getKey();
                 Integer quantity = entry.getValue();
-                pstmt2.setString(1, m.getOrderID().toString());
+                pstmt2.setString(1, order.getOrderID().toString());
                 pstmt2.setString(2, p.getProdID().toString());
                 pstmt2.setInt(3, quantity);
                 pstmt2.executeUpdate();
@@ -101,7 +104,7 @@ public class OrderRepository implements IOrderRepository {
             while (rs.next()) {
                 UUID orderID = UUID.fromString(rs.getString("OrderID")); // dri string ke uuid
                 UUID memberID = UUID.fromString(rs.getString("MemberID"));
-                
+
                 // double totalPrice = rs.getDouble("TotalAmount");
 
                 HashMap<Product, Integer> listItems = getOrderItems(orderID);

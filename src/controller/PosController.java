@@ -1,6 +1,5 @@
 package controller;
 
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,24 +15,30 @@ import repository.IMembersRepository;
 import repository.IOrderRepository;
 import repository.IProductRepository;
 import repository.ITransactionRepository;
-import repository.MembersRepository;
+import view.PosView;
 
 public class PosController implements IPosController {
+    private PosView view;
     private IOrderRepository orderRepository;
     private ITransactionRepository transactionRepository;
     private IEmployeeRepository employeeRepository;
     private IMembersRepository membersRepository;
     private IProductRepository productRepository;
     private HashMap<Product, Integer> currentCartItems = new HashMap<>();
-    private UUID currentMemberID = null;
+    private Members currentMember = null;
     private double startingCashAmount;
     private double currentCashAmount;
 
-    public PosController(IOrderRepository orderRepository, ITransactionRepository transactionRepository,
-            IEmployeeRepository employeeRepository) {
-        this.orderRepository = orderRepository;
-        this.transactionRepository = transactionRepository;
-        this.employeeRepository = employeeRepository;
+    public PosController(PosView view, IOrderRepository orderRepo,
+            ITransactionRepository transRepo, IEmployeeRepository empRepo, IMembersRepository memRepo,
+            IProductRepository prodRepo) {
+
+        this.view = view;
+        this.membersRepository = memRepo;
+        this.orderRepository = orderRepo;
+        this.transactionRepository = transRepo;
+        this.employeeRepository = empRepo;
+        this.productRepository = prodRepo;
     }
 
     @Override
@@ -59,8 +64,13 @@ public class PosController implements IPosController {
     public void addMemberToSale(String phoneNumber) {
         Members m = membersRepository.findByPhone(phoneNumber);
         if (m != null) {
-            this.currentMemberID = m.getUserID();
+            this.currentMember = m;
+            System.out.println("Member added: " + m.getName() + " (Points: " + m.getPoint() + ")");
+            ((view.PosView) view).updateMemberInfo(m.getName(), m.getPoint());
+        } else {
+            System.out.println("Member not found.");
         }
+
     }
 
     @Override
@@ -74,6 +84,7 @@ public class PosController implements IPosController {
                 this.currentCartItems.put(p, quantity);
             }
         }
+        ((view.PosView) view).updateCartTable(this.currentCartItems);
     }
 
     @Override
@@ -81,27 +92,90 @@ public class PosController implements IPosController {
         addItemToCart(sku, 1);
     }
 
-    @Override
-    public void createOrder(UUID memberUuid) {
-        Order currentOrder = new Order(memberUuid, this.currentCartItems);
-        double totalAmount = 0;
-        for (Product p : currentOrder.getListItems().keySet()) {
-            totalAmount += p.getPrice() * currentOrder.getListItems().get(p); // dapetin harga * quantity
-        }
-        currentOrder.setTotalPrice(totalAmount);
-        orderRepository.addOrder(currentOrder);
-    }
-
-    @Override
-    public void createTransaction(UUID orderID, double amountToPay, PaymentMethod payMet) {
+    private void createTransaction(UUID orderID, double amountToPay, PaymentMethod payMet) {
         Transaction m = new Transaction(orderID, amountToPay, payMet);
         transactionRepository.addTransaction(m);
 
     }
 
     @Override
-    public void endSession() {
-        
+    public void finalizeSale(double amountPaid, PaymentMethod payMet, boolean usePoints) {
+
+        double totalAmount = 0;
+        for (Product p : this.currentCartItems.keySet()) {
+            totalAmount += p.getPrice() * this.currentCartItems.get(p);
+        }
+
+        int pointsUsed = 0;
+        if (usePoints && this.currentMember != null) {
+            int memberPoints = this.currentMember.getPoint();
+
+            // 1 Point = Rp 1 Discount
+            if (memberPoints >= totalAmount) {
+                pointsUsed = (int) totalAmount;
+            } else {
+                pointsUsed = memberPoints;
+            }
+
+            totalAmount = totalAmount - pointsUsed;
+            System.out.println("Points used: " + pointsUsed + ". New Total: " + totalAmount);
+            ((view.PosView) view).updateTotalAmount(totalAmount);
+        }
+
+        // Create Order
+        UUID memberUUID = (this.currentMember != null) ? this.currentMember.getUserID() : null;
+        Order newOrder = new Order(memberUUID, this.currentCartItems);
+        newOrder.setTotalPrice(totalAmount);
+        orderRepository.addOrder(newOrder);
+
+        // Create Transaction
+        createTransaction(newOrder.getOrderID(), totalAmount, payMet);
+
+        // Update Inventory
+        for (Map.Entry<Product, Integer> entry : this.currentCartItems.entrySet()) {
+            Product p = entry.getKey();
+            p.setStockInShelf(p.getStockInShelf() - entry.getValue());
+            productRepository.updateProductStock(p);
+        }
+
+        if (payMet == PaymentMethod.CASH) {
+            this.currentCashAmount += totalAmount;
+        }
+
+        // Point Handling
+        if (this.currentMember != null) {
+
+            if (pointsUsed > 0) {
+                membersRepository.updatePoints(this.currentMember.getUserID(), -pointsUsed);
+            }
+
+            int pointsEarned = (int) (totalAmount / 100); // 1 point setiap Rp 100
+            membersRepository.updatePoints(this.currentMember.getUserID(), pointsEarned);
+
+            System.out.println("Points update: Used " + pointsUsed + ", Earned " + pointsEarned);
+        }
+
+        // Reset
+        this.currentCartItems.clear();
+        this.currentMember = null;
+        System.out.println("Sale Finalized!");
+    }
+
+    @Override
+    public boolean endSession(double actualEndingCash) {
+        double difference = actualEndingCash - this.currentCashAmount;
+
+        System.out.println("Session Ended.");
+        System.out.println("System expects: " + this.currentCashAmount);
+        System.out.println("Actual drawer: " + actualEndingCash);
+
+        if (difference != 0) {
+            System.out.println("DIFFERENCE DETECTED: " + difference);
+            return false;
+        }
+        this.currentCashAmount = 0;
+        this.startingCashAmount = 0;
+        return true;
     }
 
     public double getStartingCashAmount() {
@@ -119,6 +193,14 @@ public class PosController implements IPosController {
 
     public void setCurrentCashAmount(double currentCashAmount) {
         this.currentCashAmount = currentCashAmount;
+    }
+
+    @Override
+    public int getMemberPoints() {
+        if (currentMember != null) {
+            return currentMember.getPoint();
+        }
+        return 0;
     }
 
 }

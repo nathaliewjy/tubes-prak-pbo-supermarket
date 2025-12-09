@@ -2,26 +2,27 @@ package models.orders;
 
 import models.products.Product;
 
-import java.sql.Date;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Order {
     private UUID orderID;
     private UUID memberID;
-    private Date orderDate;
+    private LocalDateTime orderDate;
     private HashMap<Product, Integer> listItems;
     private double totalPrice;
     
 
     public Order(UUID memberID, HashMap<Product, Integer> listItems) {
-        this.orderDate = new Date(System.currentTimeMillis());
+        this.orderDate = LocalDateTime.now();
         this.orderID = UUID.randomUUID();
         this.memberID = memberID;
         this.listItems = listItems;
     }
 
-    public Order(UUID orderID, UUID memberID, Date date, HashMap<Product, Integer> listItems, double totalPrice) {
+    public Order(UUID orderID, UUID memberID, LocalDateTime date, HashMap<Product, Integer> listItems, double totalPrice) {
         this.orderID = orderID;
         this.memberID = memberID;
         this.orderDate = date;
@@ -49,7 +50,7 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
