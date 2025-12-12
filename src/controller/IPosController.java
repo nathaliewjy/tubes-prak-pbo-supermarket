@@ -15,7 +15,9 @@ public interface IPosController {
 
     public void addMemberToSale(String phoneNumber);
 
-    public void finalizeSale(double amountPaid, PaymentMethod payMet, boolean usePoints);
+    public void finalizeSale(double amountPaid, boolean usePoints);
+
+    public void finalizeSale(PaymentMethod payMet, boolean usePoints);
 
     public double getCurrentCashAmount();
 

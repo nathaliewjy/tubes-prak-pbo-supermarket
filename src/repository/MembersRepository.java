@@ -101,13 +101,13 @@ public class MembersRepository implements IMembersRepository {
     }
 
     @Override
-    public void updatePoints(UUID memberID, int addPoints) {
-        String sql = "UPDATE member SET Points = Points + ? WHERE MemberID = ?";
+    public void updatePoints(UUID memberID, int newPoints) {
+        String sql = "UPDATE member SET Points = ? WHERE MemberID = ?";
 
         try (Connection conn = Database.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, addPoints);
+            stmt.setInt(1, newPoints);
             stmt.setString(2, memberID.toString());
 
             stmt.executeUpdate();

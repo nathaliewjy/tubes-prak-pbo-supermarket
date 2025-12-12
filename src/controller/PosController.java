@@ -36,7 +36,6 @@ public class PosController implements IPosController {
     public PosController(PosView view, IOrderRepository orderRepo,
             ITransactionRepository transRepo, IEmployeeRepository empRepo, IMembersRepository memRepo,
             IProductRepository prodRepo) {
-
         this.view = view;
         this.membersRepository = memRepo;
         this.orderRepository = orderRepo;
@@ -74,7 +73,6 @@ public class PosController implements IPosController {
         } else {
             System.out.println("Member not found.");
         }
-        ((view.PosView) view).updateMemberInfo(phoneNumber, getMemberPoints());
     }
 
     @Override
@@ -103,92 +101,119 @@ public class PosController implements IPosController {
     }
 
     @Override
-    public void finalizeSale(double amountPaid, PaymentMethod payMet, boolean usePoints) {
+    public void finalizeSale(double cashGiven, boolean usePoints) {
+       
+        double totalAmount = calculateCartTotal();
 
-        double totalAmount = 0;
-        // ngitung total dari product" yang ada di cart
-        for (Product p : this.currentCartItems.keySet()) {
-            totalAmount += p.getPrice() * this.currentCartItems.get(p);
-        }
-        // pemakaian point
-        int pointsUsed = 0;
-        if (usePoints && this.currentMember != null) {
-            int memberPoints = this.currentMember.getPoint();
+        
+        double finalPrice = applyPoints(totalAmount, usePoints);
 
-            // 1 Point = Rp 1 Discount
-            if (memberPoints >= totalAmount) {
-                pointsUsed = (int) totalAmount;
-            } else {
-                pointsUsed = memberPoints;
-            }
+        
+        CashPaymentStrategy strategy = new CashPaymentStrategy(cashGiven);
 
-            totalAmount = totalAmount - pointsUsed;
-            System.out.println("Points used: " + pointsUsed + ". New Total: " + totalAmount);
-            ((view.PosView) view).updateTotalAmount(totalAmount);
-        }
-
-        IPaymentStrategy strategy;
-
-        switch (payMet) {
-            case CASH:
-                strategy = new CashPaymentStrategy(amountPaid);
-                break;
-            case QRIS:
-                strategy = new QrisPaymentStrategy();
-                break;
-            case DEBIT:
-                strategy = new DebitPaymentStrategy();
-                break;
-            default:
-                System.out.println("Invalid Payment Method");
-                return;
-        }
-
-        boolean isSuccess = strategy.processPayment(totalAmount);
-
-        if (!isSuccess) {
-            System.out.println("Transaction Aborted.");
+        if (!strategy.processPayment(finalPrice)) {
+            view.showPaymentFailure("Insufficient Cash!");
             return;
         }
 
-        // Create Order
+        
+        processSuccessAndSave(finalPrice, PaymentMethod.CASH, strategy, usePoints);
+    }
+
+    //NON-CASH (QRIS / DEBIT) 
+    @Override
+    public void finalizeSale(PaymentMethod method, boolean usePoints) {
+        
+        double totalAmount = calculateCartTotal();
+
+        
+        double finalPrice = applyPoints(totalAmount, usePoints);
+
+        IPaymentStrategy strategy;
+        if (method == PaymentMethod.QRIS)
+            strategy = new QrisPaymentStrategy();
+        else if (method == PaymentMethod.DEBIT)
+            strategy = new DebitPaymentStrategy();
+        else {
+            view.showPaymentFailure("Invalid Non-Cash Method");
+            return;
+        }
+
+        if (!strategy.processPayment(finalPrice)) {
+            view.showPaymentFailure("Payment Declined");
+            return;
+        }
+
+       
+        processSuccessAndSave(finalPrice, method, strategy, usePoints);
+    }
+
+   
+    private void processSuccessAndSave(double amountPaid, PaymentMethod method, IPaymentStrategy strategy,
+            boolean usePoints) {
+       
         UUID memberUUID = (this.currentMember != null) ? this.currentMember.getUserID() : null;
         Order newOrder = new Order(memberUUID, this.currentCartItems);
-        newOrder.setTotalPrice(totalAmount);
+        newOrder.setTotalPrice(amountPaid);
         orderRepository.addOrder(newOrder);
 
-        // Create Transaction
-        createTransaction(newOrder.getOrderID(), totalAmount, payMet);
+        
+        createTransaction(newOrder.getOrderID(), amountPaid, method);
 
-        // Update Inventory
+        
         for (Map.Entry<Product, Integer> entry : this.currentCartItems.entrySet()) {
             Product p = entry.getKey();
             p.setStockInShelf(p.getStockInShelf() - entry.getValue());
             productRepository.updateProductStock(p);
         }
-        // validasi akhir
-        if (payMet == PaymentMethod.CASH) {
-            this.currentCashAmount += totalAmount;
+
+        
+        if (method == PaymentMethod.CASH) {
+            this.currentCashAmount += amountPaid;
         }
 
-        // Point Handling (penambahan dan pengurungan point)
+        // E. Update Member Points
         if (this.currentMember != null) {
-
-            if (pointsUsed > 0) {
-                membersRepository.updatePoints(this.currentMember.getUserID(), -pointsUsed);
+            int pointsEarned = (int) amountPaid / 100; // 1 point per 100 currency units
+            if (usePoints) {
+                int pointsToUse = (this.currentMember.getPoint() >= amountPaid) ? (int) amountPaid
+                        : this.currentMember.getPoint();
+                this.currentMember.setPoint(this.currentMember.getPoint() - pointsToUse + pointsEarned);
+            } else {
+                this.currentMember.setPoint(this.currentMember.getPoint() + pointsEarned);
             }
-
-            int pointsEarned = (int) (totalAmount / 100); // 1 point setiap Rp 100
-            membersRepository.updatePoints(this.currentMember.getUserID(), pointsEarned);
-
-            System.out.println("Points update: Used " + pointsUsed + ", Earned " + pointsEarned);
+            membersRepository.updatePoints(memberUUID, currentMember.getPoint());
         }
 
-        // Reset
+        // F. Show Success View
+        if (strategy instanceof CashPaymentStrategy) {
+            view.showPaymentSuccess(((CashPaymentStrategy) strategy).getChange());
+        } else {
+            view.showPaymentSuccess();
+        }
+
+        // G. Reset
         this.currentCartItems.clear();
         this.currentMember = null;
-        // ((view.PosView) view).resetSaleView();
-        System.out.println("Sale Finalized!");
+    }
+
+    // Helper to avoid duplication
+    private double calculateCartTotal() {
+        double total = 0;
+        for (Product p : this.currentCartItems.keySet()) {
+            total += p.getPrice() * this.currentCartItems.get(p);
+        }
+        return total;
+    }
+
+    // Helper for points
+    private double applyPoints(double total, boolean usePoints) {
+        if (usePoints && this.currentMember != null) {
+            int points = this.currentMember.getPoint();
+            int discount = (points >= total) ? (int) total : points;
+            return total - discount;
+        }
+        return total;
     }
 
     @Override

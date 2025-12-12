@@ -17,7 +17,7 @@ public class PosView extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
-    // Login 
+    // Login
     private JPanel loginPanel;
     private JTextField nikField;
 
@@ -25,7 +25,7 @@ public class PosView extends JFrame {
     private JPanel initPanel;
     private JTextField startingCashField;
 
-    // Main POS 
+    // Main POS
     private JPanel posPanel;
     private JLabel lblMemberName, lblPoints, lblTotal;
     private JTable cartTable;
@@ -38,7 +38,6 @@ public class PosView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-     
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
@@ -47,14 +46,12 @@ public class PosView extends JFrame {
         initSetupScreen();
         initMainPosScreen();
 
-        
         mainPanel.add(loginPanel, "LOGIN");
         mainPanel.add(initPanel, "SETUP");
         mainPanel.add(posPanel, "POS");
 
         add(mainPanel);
     }
-
 
     public void setController(IPosController controller) {
         this.controller = controller;
@@ -233,7 +230,7 @@ public class PosView extends JFrame {
     private void handlePayment() {
         // 1. Check Points
         boolean usePoints = false;
-        int points = controller.getMemberPoints(); // Uses the helper we made
+        int points = controller.getMemberPoints(); 
         if (points > 0) {
             int choice = JOptionPane.showConfirmDialog(this,
                     "Member has " + points + " points. Redeem?", "Points", JOptionPane.YES_NO_OPTION);
@@ -249,24 +246,37 @@ public class PosView extends JFrame {
         if (selectedMethod == null)
             return;
 
-        double amountPaid = 0;
+        double cashReceived = 0;
         if (selectedMethod == PaymentMethod.CASH) {
             String cashStr = JOptionPane.showInputDialog(this, "Enter Cash Received:");
             try {
-                amountPaid = Double.parseDouble(cashStr);
+                cashReceived = Double.parseDouble(cashStr);
+                controller.finalizeSale(cashReceived, usePoints);
             } catch (Exception e) {
                 return;
             }
+        } else {
+            controller.finalizeSale(selectedMethod, usePoints);
         }
 
-        
-        
-        controller.finalizeSale(amountPaid, selectedMethod, usePoints);
+    }
 
-        // 5. Refresh UI (Clear table, etc)
-        updateCartTable(new HashMap<>());
-        lblTotal.setText("Total: Rp 0");
-        updateMemberInfo("Guest", 0);
+    public void showPaymentSuccess(double change) {
+        String message = "Transaction Successful!";
+        if (change > 0) {
+            message += String.format("\nChange: Rp %,.2f", change);
+        }
+        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+        resetUI();
+    }
+
+    public void showPaymentSuccess() {
+        JOptionPane.showMessageDialog(this, "Transaction Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        resetUI();
+    }
+
+    public void showPaymentFailure(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage, "Payment Failed", JOptionPane.ERROR_MESSAGE);
     }
 
     private void handleEndSession() {
@@ -288,6 +298,14 @@ public class PosView extends JFrame {
     // =========================================
     // UPDATE METHODS (Controller calls these)
     // =========================================
+
+    public void resetUI() {
+        updateCartTable(new HashMap<>());
+        lblTotal.setText("Total: Rp 0");
+        updateMemberInfo("Guest", 0);
+        skuField.setText("");
+        qtyField.setText("");
+    }
 
     public void updateCartTable(Map<Product, Integer> cart) {
         tableModel.setRowCount(0); // Clear table
