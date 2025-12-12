@@ -16,4 +16,5 @@ public interface IProductRepository {
     void updateProductPrice(UUID prodID, double newPrice);
     ArrayList<Product> getExpiredProducts(int days);
     ArrayList<Product> getAllProducts();
+    Product findBySku(String sku);
 }

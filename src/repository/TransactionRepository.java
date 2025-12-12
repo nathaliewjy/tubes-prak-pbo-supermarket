@@ -69,4 +69,23 @@ public class TransactionRepository implements ITransactionRepository {
         return transactionList;
     }
 
+    @Override
+    public double calculateTotalRevenue() {
+        String sql = "SELECT SUM(TotalPrice) AS TotalPendapatan FROM `transaction`";
+
+        double total = 0;
+        try (Connection conn = Database.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getDouble("TotalPendapatan");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Gagal hitung revenue: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return total;
+    }
 }
