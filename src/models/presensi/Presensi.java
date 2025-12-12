@@ -1,9 +1,7 @@
 package models.presensi;
 
-import models.users.Employee;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.UUID;
 
 public class Presensi {
@@ -14,6 +12,12 @@ public class Presensi {
 
     public Presensi(Date date, StatusKehadiran status, UUID empID) {
         this.presensiID = UUID.randomUUID();
+        this.date = date;
+        this.status = status;
+        this.empID = empID;
+    }
+     public Presensi(UUID presensiID, Date date, StatusKehadiran status, UUID empID) {
+        this.presensiID = presensiID;
         this.date = date;
         this.status = status;
         this.empID = empID;
@@ -53,3 +57,4 @@ public class Presensi {
     }
 
 }
+

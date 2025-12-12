@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public class Product {
     private UUID prodID;
+    private String sku;
     private String brand;
     private ProductCategory category;
     private double price;
@@ -14,8 +15,9 @@ public class Product {
     private Date expiryDate;
     private Date deletedAt;
 
-    public Product(String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
+    public Product(String sku, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         this.prodID = UUID.randomUUID();
+        this.sku = sku;
         this.brand = brand;
         this.category = category;
         this.price = price;
@@ -25,12 +27,33 @@ public class Product {
         this.expiryDate = expiryDate;
     }
 
+    public Product(UUID prodID, String sku,  String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Date deletedAt) {
+        this.prodID = prodID;
+        this.sku = sku;
+        this.brand = brand;
+        this.category = category;
+        this.price = price;
+        this.stockInStorage = stockInStorage;
+        this.stockInShelf = stockInShelf;
+        this.manufactureDate = manufactureDate;
+        this.expiryDate = expiryDate;
+        this.deletedAt = deletedAt;
+    }
+    
     public UUID getProdID() {
         return this.prodID;
     }
 
     public void setProdID(UUID prodID) {
         this.prodID = prodID;
+    }
+
+    public String getSku() {
+        return this.sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public String getBrand() {

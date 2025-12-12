@@ -14,12 +14,8 @@ import util.Database;
 public class TransactionRepository implements ITransactionRepository {
     Connection conn = Database.connect();
 
+    
 
-    public void findByDate(String ddmmyy){
-        conn = Database.connect();
-        PreparedStatement pstmt = null;
-        
-    }
     public void addTransaction(Transaction m, String TransactionType, String orderID) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
@@ -41,7 +37,7 @@ public class TransactionRepository implements ITransactionRepository {
         }
     }
 
-    public ArrayList<Transaction> getTransactionList() {
+    public ArrayList<Transaction> getTransactionList() { // return list Transaction(OrderID, TotalPrice, PaymentMethod)
         ArrayList<Transaction> transactionList = new ArrayList<>();
         String sqlTransaction = "SELECT * FROM transaction";
         PreparedStatement pstmt = null;
@@ -69,4 +65,5 @@ public class TransactionRepository implements ITransactionRepository {
         return transactionList;
     }
 
+    
 }

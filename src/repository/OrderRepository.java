@@ -23,7 +23,7 @@ public class OrderRepository implements IOrderRepository {
         // this.orderList = new HashMap<>();
     }
 
-    @Override    
+    @Override
     public String addOrder(Order m) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
@@ -66,9 +66,11 @@ public class OrderRepository implements IOrderRepository {
         // work here
     }
 
-    
     public HashMap<Product, Integer> getOrderItems(UUID orderID) {
-        String sql = "SELECT p.ProductID FROM order_product JOIN orders ON orders.OrderID = order_product.OrderID JOIN products p ON p.ProductID = order_product.ProductID WHERE orders.OrderID = ?";
+        String sql = "SELECT op.Quantity, p.* " + //  Ambil smua column dari product + quantity
+                "FROM order_product op " +
+                "JOIN product p ON op.ProductID = p.ProdID " +
+                "WHERE op.OrderID = ?";
         PreparedStatement pstmt = null;
         HashMap<Product, Integer> listItems = new HashMap<>();
         try {
@@ -78,14 +80,16 @@ public class OrderRepository implements IOrderRepository {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Product product = new Product(
+                        rs.getString("SKU"),
                         rs.getString("Brand"),
-                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE, // Prdouct Category enum,
+                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE, // Prdouct enum
                         rs.getDouble("PRICE"),
                         rs.getInt("StockInStorage"),
                         rs.getInt("StockInShelf"),
                         rs.getDate("ManufactureDate"),
-                        rs.getDate("ExpiryDate")
-                        );
+                        rs.getDate("ExpiryDate"));
+
+                product.setProdID(UUID.fromString(rs.getString("ProdID")));
                 int quantity = rs.getInt("Quantity");
                 listItems.put(product, quantity);
             }
@@ -98,7 +102,7 @@ public class OrderRepository implements IOrderRepository {
 
     public ArrayList<Order> getOrderList() { // masukin semua order ke arrayList
         ArrayList<Order> orderList = new ArrayList<>();
-        String sqlForOrders = "SELECT * FROM orders";
+        String sqlForOrders = "SELECT * FROM orders ORDER BY OrderDate DESC";
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -107,12 +111,15 @@ public class OrderRepository implements IOrderRepository {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 UUID orderID = UUID.fromString(rs.getString("OrderID")); // dri string ke uuid
-                UUID memberID =UUID.fromString(rs.getString("MemberID"));
-                java.sql.Date orderDate = rs.getDate("OrderDate"); // ini entah kenapa harus pake java.sql.date, gabisa pake Date
-                // double totalPrice = rs.getDouble("TotalAmount");
+                UUID memberID = UUID.fromString(rs.getString("MemberID"));
+                java.sql.Date orderDate = rs.getDate("OrderDate"); // ini entah kenapa harus pake java.sql.date, gabisa
+                                                                   // pake Date
+                double totalPrice = rs.getDouble("TotalAmount");
 
-                HashMap<Product, Integer> listItems = getOrderItems(orderID) ;
-                Order order = new Order(memberID, orderDate,listItems);
+                HashMap<Product, Integer> listItems = getOrderItems(orderID);
+
+                Order order = new Order(memberID, orderDate, listItems);
+                order.setTotalPrice(totalPrice);
                 orderList.add(order);
             }
 

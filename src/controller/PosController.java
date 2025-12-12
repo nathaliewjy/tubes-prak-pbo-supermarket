@@ -19,7 +19,7 @@ public class PosController {
     }
 
 
-    public void processingOrder(Order order, String transactionType, Transaction transaction) { 
+    public void createOrder(Order order, String transactionType, Transaction transaction) { 
         orderRepository.addOrder(order);
         transactionRepository.addTransaction(transaction, transactionType, order.getOrderID().toString());
     }

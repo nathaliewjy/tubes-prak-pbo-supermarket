@@ -9,8 +9,15 @@ import java.util.UUID;
 public class Manager extends Employee {
     private String department;
 
-    public Manager(String department, int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Date deletedAt) {
-        super(salary, hireDate, workingHours, nik, userID, name, Role.MANAGER, deletedAt);
+    // cerate new
+    public Manager(String name, int salary, Date hireDate, int workingHours, String nik, String department) {
+        super(name, Role.MANAGER, salary, hireDate, workingHours, nik);
+        this.department = department;
+    }
+
+    // amvil dari db
+    public Manager(UUID userID, String name, Date deletedAt, int salary, Date hireDate, int workingHours, String nik, String department) {
+        super(userID, name, Role.MANAGER, deletedAt, salary, hireDate, workingHours, nik);
         this.department = department;
     }
 
