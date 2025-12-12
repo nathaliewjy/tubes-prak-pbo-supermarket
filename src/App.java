@@ -18,5 +18,11 @@ public class App {
             ManagerView view = new ManagerView(managerController);
             view.setVisible(true);
         });
+
+        // kata jarvis
+        // kenapa ga lgsg new ManagerView() aja, kenapa harus pake SwingUtilities ...
+        // karena waktu program di run, ada 2 thread (jalur) : main thread (psvm) sama event dispatch thread (khusus punyanya java swing, jd cmn ngurusin UI)
+        // so si EDT itu gabole dirun di main thread karena bisa conflict
+        // makanya pake SwingUtilities.invokeLater biar ManagerView ada di thread yg aman
     }
 }
