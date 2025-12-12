@@ -13,19 +13,19 @@ import java.util.Map;
 public class PosView extends JFrame {
     private IPosController controller;
 
-    // Layout Manager to switch screens
+    // Layout Manager
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
-    // --- Screen 1: Login ---
+    // Login 
     private JPanel loginPanel;
     private JTextField nikField;
 
-    // --- Screen 2: Initialization ---
+    // Initialization
     private JPanel initPanel;
     private JTextField startingCashField;
 
-    // --- Screen 3: Main POS ---
+    // Main POS 
     private JPanel posPanel;
     private JLabel lblMemberName, lblPoints, lblTotal;
     private JTable cartTable;
@@ -38,7 +38,7 @@ public class PosView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Setup CardLayout
+     
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
@@ -47,7 +47,7 @@ public class PosView extends JFrame {
         initSetupScreen();
         initMainPosScreen();
 
-        // Add screens to main panel
+        
         mainPanel.add(loginPanel, "LOGIN");
         mainPanel.add(initPanel, "SETUP");
         mainPanel.add(posPanel, "POS");
@@ -55,13 +55,13 @@ public class PosView extends JFrame {
         add(mainPanel);
     }
 
-    // --- STEP 1: SETTER INJECTION ---
+
     public void setController(IPosController controller) {
         this.controller = controller;
     }
 
     // =========================================
-    // SCREEN 1: LOGIN UI
+    // LOGIN UI
     // =========================================
     private void initLoginScreen() {
         loginPanel = new JPanel(new GridBagLayout());
@@ -98,7 +98,7 @@ public class PosView extends JFrame {
     }
 
     // =========================================
-    // SCREEN 2: INITIALIZATION
+    // INITIALIZATION
     // =========================================
     private void initSetupScreen() {
         initPanel = new JPanel(new GridBagLayout());
@@ -133,7 +133,7 @@ public class PosView extends JFrame {
     }
 
     // =========================================
-    // SCREEN 3: MAIN POS INTERFACE
+    // MAIN POS INTERFACE
     // =========================================
     private void initMainPosScreen() {
         posPanel = new JPanel(new BorderLayout());
@@ -150,7 +150,6 @@ public class PosView extends JFrame {
             String phone = JOptionPane.showInputDialog(this, "Enter Phone Number:");
             if (phone != null && !phone.isEmpty()) {
                 controller.addMemberToSale(phone);
-
             }
         });
 
@@ -250,21 +249,24 @@ public class PosView extends JFrame {
         if (selectedMethod == null)
             return;
 
-        double cashGiven = 0;
+        double amountPaid = 0;
         if (selectedMethod == PaymentMethod.CASH) {
             String cashStr = JOptionPane.showInputDialog(this, "Enter Cash Received:");
             try {
-                cashGiven = Double.parseDouble(cashStr);
+                amountPaid = Double.parseDouble(cashStr);
             } catch (Exception e) {
                 return;
             }
         }
 
-        controller.finalizeSale(cashGiven, selectedMethod, usePoints);
+        
+        
+        controller.finalizeSale(amountPaid, selectedMethod, usePoints);
 
         // 5. Refresh UI (Clear table, etc)
         updateCartTable(new HashMap<>());
         lblTotal.setText("Total: Rp 0");
+        updateMemberInfo("Guest", 0);
     }
 
     private void handleEndSession() {

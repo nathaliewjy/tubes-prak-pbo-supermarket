@@ -15,6 +15,10 @@ import repository.IMembersRepository;
 import repository.IOrderRepository;
 import repository.IProductRepository;
 import repository.ITransactionRepository;
+import strategies.payment.CashPaymentStrategy;
+import strategies.payment.DebitPaymentStrategy;
+import strategies.payment.IPaymentStrategy;
+import strategies.payment.QrisPaymentStrategy;
 import view.PosView;
 
 public class PosController implements IPosController {
@@ -70,7 +74,7 @@ public class PosController implements IPosController {
         } else {
             System.out.println("Member not found.");
         }
-
+        ((view.PosView) view).updateMemberInfo(phoneNumber, getMemberPoints());
     }
 
     @Override
@@ -102,10 +106,11 @@ public class PosController implements IPosController {
     public void finalizeSale(double amountPaid, PaymentMethod payMet, boolean usePoints) {
 
         double totalAmount = 0;
+        // ngitung total dari product" yang ada di cart
         for (Product p : this.currentCartItems.keySet()) {
             totalAmount += p.getPrice() * this.currentCartItems.get(p);
         }
-
+        // pemakaian point
         int pointsUsed = 0;
         if (usePoints && this.currentMember != null) {
             int memberPoints = this.currentMember.getPoint();
@@ -120,6 +125,30 @@ public class PosController implements IPosController {
             totalAmount = totalAmount - pointsUsed;
             System.out.println("Points used: " + pointsUsed + ". New Total: " + totalAmount);
             ((view.PosView) view).updateTotalAmount(totalAmount);
+        }
+
+        IPaymentStrategy strategy;
+
+        switch (payMet) {
+            case CASH:
+                strategy = new CashPaymentStrategy(amountPaid);
+                break;
+            case QRIS:
+                strategy = new QrisPaymentStrategy();
+                break;
+            case DEBIT:
+                strategy = new DebitPaymentStrategy();
+                break;
+            default:
+                System.out.println("Invalid Payment Method");
+                return;
+        }
+
+        boolean isSuccess = strategy.processPayment(totalAmount);
+
+        if (!isSuccess) {
+            System.out.println("Transaction Aborted.");
+            return;
         }
 
         // Create Order
@@ -137,12 +166,12 @@ public class PosController implements IPosController {
             p.setStockInShelf(p.getStockInShelf() - entry.getValue());
             productRepository.updateProductStock(p);
         }
-
+        // validasi akhir
         if (payMet == PaymentMethod.CASH) {
             this.currentCashAmount += totalAmount;
         }
 
-        // Point Handling
+        // Point Handling (penambahan dan pengurungan point)
         if (this.currentMember != null) {
 
             if (pointsUsed > 0) {
@@ -158,6 +187,7 @@ public class PosController implements IPosController {
         // Reset
         this.currentCartItems.clear();
         this.currentMember = null;
+        // ((view.PosView) view).resetSaleView();
         System.out.println("Sale Finalized!");
     }
 
