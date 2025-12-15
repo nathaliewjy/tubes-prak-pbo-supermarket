@@ -27,6 +27,15 @@ public abstract class Employee extends User {
         this.nik = nik;
     }
 
+    public Employee(UUID userID, String name, Role role, Date deletedAt, int salary, Date hireDate, int workingHours,
+            String nik) {
+        super(userID, name, role, deletedAt);
+        this.salary = salary;
+        this.hireDate = hireDate;
+        this.workingHours = workingHours;
+        this.nik = nik;
+    }
+
     public int getSalary() {
         return this.salary;
     }

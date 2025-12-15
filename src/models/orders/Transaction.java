@@ -9,8 +9,20 @@ public class Transaction {
 
     public Transaction(UUID orderID, double amountToPay, PaymentMethod payMet) {
         this.transID = UUID.randomUUID();
+        this.orderID = orderID;
         this.amountToPay = amountToPay;
         this.payMet = payMet;
+    }
+
+    public Transaction(UUID transID, UUID orderID, double amountToPay, PaymentMethod payMet) {
+        this.transID = transID;
+        this.orderID = orderID;
+        this.amountToPay = amountToPay;
+        this.payMet = payMet;
+    }
+
+    public UUID getOrderID() {
+        return orderID;
     }
 
     public UUID getTransID() {

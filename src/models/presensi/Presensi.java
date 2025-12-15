@@ -8,12 +8,14 @@ public class Presensi {
     private UUID presensiID;
     private Date date;
     private StatusKehadiran status;
+    private String empNIK;
     private UUID empID;
 
-    public Presensi(Date date, StatusKehadiran status, UUID empID) {
+    public Presensi(Date date, StatusKehadiran status,String empNIK, UUID empID) {
         this.presensiID = UUID.randomUUID();
         this.date = date;
         this.status = status;
+        this.empNIK = empNIK;
         this.empID = empID;
     }
 

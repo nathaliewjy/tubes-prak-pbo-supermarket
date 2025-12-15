@@ -6,18 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import javax.naming.spi.DirStateFactory.Result;
-
 import models.products.Product;
 import models.products.ProductCategory;
-import models.users.Employee;
 import util.Database;
 
 public class ProductRepository implements IProductRepository {
 
     private Product resultSetProduct(ResultSet rs) throws SQLException {
         Product product = new Product(
+                UUID.fromString(rs.getString("ProdID")),
                 rs.getString("SKU"),
                 rs.getString("Brand"),
                 ProductCategory.valueOf(rs.getString("Category")),
@@ -25,9 +22,8 @@ public class ProductRepository implements IProductRepository {
                 rs.getInt("StockInStorage"),
                 rs.getInt("StockInShelf"),
                 rs.getDate("ManufactureDate"),
-                rs.getDate("ExpiryDate"));
-        // Set the ID from the DB, since the constructor creates a random one
-        product.setProdID(UUID.fromString(rs.getString("ProdID")));
+                rs.getDate("ExpiryDate"),
+                rs.getDate("deletedAt"));
         return product;
     }
 
@@ -49,6 +45,25 @@ public class ProductRepository implements IProductRepository {
         return null;
     }
 
+    @Override
+    public Product findProductBySKU(String sku) {
+        String sql = "SELECT * FROM product WHERE SKU = ? AND deletedAt IS NULL";
+        try (Connection conn = Database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, sku);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return resultSetProduct(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public void addProduct(Product product) {
         String sql = "INSERT INTO product (ProdID, SKU, Brand, Category, PRICE, StockInStorage, StockInShelf, ManufactureDate, ExpiryDate) "
                 +
@@ -186,6 +201,7 @@ public class ProductRepository implements IProductRepository {
 
         return expiredProds;
     }
+}
 
     @Override
     public ArrayList<Product> getAllProducts() {

@@ -9,8 +9,7 @@ import models.orders.Order;
 import models.products.Product;
 
 public interface IOrderRepository {
-    public String addOrder(Order m);
-    public void deleteOrder();
+    public void addOrder(Order m);
     ArrayList<Order> getOrderList();
     HashMap<Product, Integer> getOrderItems(UUID orderID);
 }

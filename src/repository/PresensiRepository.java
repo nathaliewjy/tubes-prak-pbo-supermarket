@@ -18,7 +18,9 @@ public class PresensiRepository implements IPresensiRepository {
         Presensi presensi = new Presensi(
                 rs.getDate("TanggalKehadiran"),
                 StatusKehadiran.valueOf(rs.getString("StatusKehadiran")),
+                rs.getString("NIK"),
                 UUID.fromString(rs.getString("EmployeeID")));
+
         presensi.setPresensiID(UUID.fromString(rs.getString("PresensiID")));
         return presensi;
     }

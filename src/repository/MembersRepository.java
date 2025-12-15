@@ -30,7 +30,7 @@ public class MembersRepository implements IMembersRepository{
         return null;
     }
 
-    public void addMembers(Members m){
+    public void addMembers(Members m) {
         String sqlUsers = "INSERT INTO users (UserID, Name, Role) VALUES (?, ?, ?)";
         String sqlMember = "INSERT INTO member (MemberID, Phone, Points) VALUES (?, ?, ?)";
 
@@ -53,7 +53,7 @@ public class MembersRepository implements IMembersRepository{
         }
     }
 
-    public void deleteMembers(String phone){
+    public void deleteMembers(String phone) {
         String sql = "UPDATE users u INNER JOIN member m ON u.UserID = m.MemberID SET u.deletedAt = NOW(), m.deletedAt = NOW() WHERE m.Phone = ?";
 
         try (Connection conn = Database.connect();
@@ -101,13 +101,13 @@ public class MembersRepository implements IMembersRepository{
     }
 
     @Override
-    public void updatePoints(UUID memberID, int addPoints) {
-        String sql = "UPDATE member SET Points = Points + ? WHERE MemberID = ?";
+    public void updatePoints(UUID memberID, int newPoints) {
+        String sql = "UPDATE member SET Points = ? WHERE MemberID = ?";
 
         try (Connection conn = Database.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, addPoints);
+            stmt.setInt(1, newPoints);
             stmt.setString(2, memberID.toString());
 
             stmt.executeUpdate();

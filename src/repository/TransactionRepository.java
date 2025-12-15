@@ -14,27 +14,28 @@ import util.Database;
 public class TransactionRepository implements ITransactionRepository {
     Connection conn = Database.connect();
 
-
-    public void findByDate(String ddmmyy){
+    public void findByDate(String ddmmyy) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
-        
+
     }
-    public void addTransaction(Transaction m, String TransactionType, String orderID) {
+
+    public void addTransaction(Transaction m) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
 
-        String sqlTransaction = "INSERT INTO transaction(TransID,OrderID,TransDate,TotalPrice,PaymentMethod,TransactionType) VALUES(?,?,current_timestamp(),?,?,?)";
+        String sqlTransaction = "INSERT INTO transaction(TransID,OrderID,TransDate,TotalPrice,PaymentMethod) VALUES(?,?,?,?,?)";
 
         String transID = UUID.randomUUID().toString();
-        String fkOrderID = orderID;
+        String fkOrderID = m.getOrderID().toString();
         try {
             pstmt = conn.prepareStatement(sqlTransaction);
             pstmt.setString(1, transID);
             pstmt.setString(2, fkOrderID);
-            pstmt.setDouble(3, m.getAmountToPay());
-            pstmt.setString(4, m.getPaymentMethod().toString());
-            pstmt.setString(5, TransactionType);
+            pstmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+            pstmt.setDouble(4, m.getAmountToPay());
+            pstmt.setString(5, m.getPaymentMethod().toString());
+            
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.getSQLState();
@@ -69,6 +70,10 @@ public class TransactionRepository implements ITransactionRepository {
         return transactionList;
     }
 
+    public void findByOrderID(String orderID) {
+        conn = Database.connect();
+        PreparedStatement pstmt = null;
+        
     @Override
     public double calculateTotalRevenue() {
         String sql = "SELECT SUM(TotalPrice) AS TotalPendapatan FROM `transaction`";
