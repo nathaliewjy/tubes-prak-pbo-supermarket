@@ -27,6 +27,24 @@ public class ProductRepository implements IProductRepository {
         return product;
     }
 
+    // nambah getAll Products
+    public ArrayList<Product> getAllProducts(){
+        ArrayList<Product> productList = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE deletedAt IS NULL";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try{
+            conn = Database.connect();
+            pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                productList.add(resultSetProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
     @Override
     public Product findProductById(UUID id) {
         String sql = "SELECT * FROM product WHERE ProdID = ? AND deletedAt IS NULL";
@@ -202,6 +220,25 @@ public class ProductRepository implements IProductRepository {
         return expiredProds;
     }
 
+    public Product getProductByName(String name){
+        String sql = "SELECT * FROM product WHERE Brand = ? AND deletedAt IS NULL";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try{
+            conn = Database.connect();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                return resultSetProduct(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+        
+    }
+}
 
     @Override
     public ArrayList<Product> getAllProducts() {

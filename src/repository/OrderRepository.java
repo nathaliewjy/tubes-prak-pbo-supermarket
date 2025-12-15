@@ -63,7 +63,10 @@ public class OrderRepository implements IOrderRepository {
 
     @Override
     public HashMap<Product, Integer> getOrderItems(UUID orderID) {
-        String sql = "SELECT p.ProductID FROM order_product JOIN orders ON orders.OrderID = order_product.OrderID JOIN products p ON p.ProductID = order_product.ProductID WHERE orders.OrderID = ?";
+        String sql = "SELECT op.Quantity, p.* " + //  Ambil smua column dari product + quantity
+                "FROM order_product op " +
+                "JOIN product p ON op.ProductID = p.ProdID " +
+                "WHERE op.OrderID = ?";
         PreparedStatement pstmt = null;
         HashMap<Product, Integer> listItems = new HashMap<>();
         try {
@@ -81,6 +84,8 @@ public class OrderRepository implements IOrderRepository {
                         rs.getInt("StockInShelf"),
                         rs.getDate("ManufactureDate"),
                         rs.getDate("ExpiryDate"));
+
+                product.setProdID(UUID.fromString(rs.getString("ProdID")));
                 int quantity = rs.getInt("Quantity");
                 listItems.put(product, quantity);
             }
@@ -94,7 +99,7 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public ArrayList<Order> getOrderList() { // masukin semua order ke arrayList
         ArrayList<Order> orderList = new ArrayList<>();
-        String sqlForOrders = "SELECT * FROM orders";
+        String sqlForOrders = "SELECT * FROM orders ORDER BY OrderDate DESC";
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {

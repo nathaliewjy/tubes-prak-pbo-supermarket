@@ -42,7 +42,7 @@ public class TransactionRepository implements ITransactionRepository {
         }
     }
 
-    public ArrayList<Transaction> getTransactionList() {
+    public ArrayList<Transaction> getTransactionList() { // return list Transaction(OrderID, TotalPrice, PaymentMethod)
         ArrayList<Transaction> transactionList = new ArrayList<>();
         String sqlTransaction = "SELECT * FROM transaction";
         PreparedStatement pstmt = null;
