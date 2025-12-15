@@ -28,16 +28,16 @@ public class ProductRepository implements IProductRepository {
     }
 
     // nambah getAll Products
-    public ArrayList<Product> getAllProducts(){
+    public ArrayList<Product> getAllProducts() {
         ArrayList<Product> productList = new ArrayList<>();
         String sql = "SELECT * FROM product WHERE deletedAt IS NULL";
         Connection conn = null;
         PreparedStatement pstmt = null;
-        try{
+        try {
             conn = Database.connect();
             pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 productList.add(resultSetProduct(rs));
             }
         } catch (SQLException e) {
@@ -45,11 +45,12 @@ public class ProductRepository implements IProductRepository {
         }
         return productList;
     }
+
     @Override
     public Product findProductById(UUID id) {
         String sql = "SELECT * FROM product WHERE ProdID = ? AND deletedAt IS NULL";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, id.toString());
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -87,7 +88,7 @@ public class ProductRepository implements IProductRepository {
                 +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, product.getProdID().toString());
             pstmt.setString(2, product.getSku());
@@ -109,7 +110,7 @@ public class ProductRepository implements IProductRepository {
     public void deleteProduct(UUID id) {
         String sql = "UPDATE product SET deletedAt = CURRENT_TIMESTAMP WHERE ProdID = ?";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, id.toString());
             pstmt.executeUpdate();
@@ -125,7 +126,7 @@ public class ProductRepository implements IProductRepository {
         String sql = "SELECT * FROM product WHERE Category = ? AND deletedAt IS NULL";
 
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, category.name());
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -143,7 +144,7 @@ public class ProductRepository implements IProductRepository {
     public void updateProductStock(Product product) {
         String sql = "UPDATE product SET StockInStorage = ?, StockInShelf = ? WHERE ProdID = ?";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, product.getStockInStorage());
             pstmt.setInt(2, product.getStockInShelf());
@@ -160,7 +161,7 @@ public class ProductRepository implements IProductRepository {
         String sql = "SELECT * FROM products WHERE ExpiryDate < NOW()";
         ResultSet rs = null;
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -187,16 +188,15 @@ public class ProductRepository implements IProductRepository {
         String sql = "UPDATE product SET price = ? WHERE ProdID = ?";
 
         try (Connection conn = Database.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setDouble(1, newPrice);
             stmt.setString(2, prodID.toString());
             stmt.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public ArrayList<Product> getExpiredProducts(int days) {
@@ -204,7 +204,7 @@ public class ProductRepository implements IProductRepository {
         String sql = "SELECT * FROM product WHERE ExpiryDate <= DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY) AND deletedAt IS NULL ORDER BY ExpiryDate ASC";
 
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, days);
 
@@ -220,45 +220,22 @@ public class ProductRepository implements IProductRepository {
         return expiredProds;
     }
 
-    public Product getProductByName(String name){
+    public Product getProductByName(String name) {
         String sql = "SELECT * FROM product WHERE Brand = ? AND deletedAt IS NULL";
         Connection conn = null;
         PreparedStatement pstmt = null;
-        try{
+        try {
             conn = Database.connect();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return resultSetProduct(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-        
+
     }
-}
-
-    @Override
-    public ArrayList<Product> getAllProducts() {
-        ArrayList<Product> prods = new ArrayList<>();
-
-        String sql = "SELECT * FROM product WHERE deletedAt IS NULL";
-
-        try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            while (rs.next()) {
-                prods.add(resultSetProduct(rs));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return prods;
-    }
-
-    
 }

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class InventoryView extends JFrame {
 
-
     private InventoryController inventoryController; // controllerr
 
     private Employee currentEmployee; // user yg login
@@ -329,7 +328,4 @@ public class InventoryView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new InventoryView().setVisible(true));
-    }
 }

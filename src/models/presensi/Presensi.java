@@ -1,6 +1,5 @@
 package models.presensi;
 
-
 import java.sql.Date;
 import java.util.UUID;
 
@@ -11,7 +10,7 @@ public class Presensi {
     private String empNIK;
     private UUID empID;
 
-    public Presensi(Date date, StatusKehadiran status,String empNIK, UUID empID) {
+    public Presensi(Date date, StatusKehadiran status, String empNIK, UUID empID) {
         this.presensiID = UUID.randomUUID();
         this.date = date;
         this.status = status;
@@ -20,12 +19,6 @@ public class Presensi {
     }
 
     public Presensi(UUID presensiID, Date date, StatusKehadiran status, UUID empID) {
-        this.presensiID = presensiID;
-        this.date = date;
-        this.status = status;
-        this.empID = empID;
-    }
-     public Presensi(UUID presensiID, Date date, StatusKehadiran status, UUID empID) {
         this.presensiID = presensiID;
         this.date = date;
         this.status = status;

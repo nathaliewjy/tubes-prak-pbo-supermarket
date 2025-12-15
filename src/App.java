@@ -1,21 +1,12 @@
 import controller.ManagerController;
 import repository.*;
+import view.InventoryView;
 import view.ManagerView;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import controller.PosController;
-import repository.EmployeeRepository;
-import repository.IEmployeeRepository;
-import repository.IMembersRepository;
-import repository.IOrderRepository;
-import repository.IProductRepository;
-import repository.ITransactionRepository;
-import repository.MembersRepository;
-import repository.OrderRepository;
-import repository.ProductRepository;
-import repository.TransactionRepository;
 import view.PosView;
 
 public class App {
@@ -61,7 +52,7 @@ public class App {
                 view.setVisible(true);
             });
         } else if (selectedApp == 2) {
-            // runStockApp();
+            SwingUtilities.invokeLater(() -> new InventoryView().setVisible(true));
         } else {
             JOptionPane.showMessageDialog(null, "Tidak ada aplikasi yang dipilih. Program akan keluar.");
             System.exit(0);
