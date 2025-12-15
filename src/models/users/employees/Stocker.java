@@ -19,10 +19,7 @@ public class Stocker extends Employee {
         super(userID, name, Role.STOCKER, deletedAt, salary, hireDate, workingHours, nik);
     }
 
-    public Stocker(UUID userID, String name, Date deletedAt, int salary, Date hireDate,
-            int workingHours, String nik) {
-        super(userID, name, Role.STOCKER, deletedAt, salary, hireDate, workingHours, nik);
-    }
+
 
     @Override
     public String toString() {

@@ -201,7 +201,7 @@ public class ProductRepository implements IProductRepository {
 
         return expiredProds;
     }
-}
+
 
     @Override
     public ArrayList<Product> getAllProducts() {
@@ -223,23 +223,5 @@ public class ProductRepository implements IProductRepository {
         return prods;
     }
 
-    @Override
-    public Product findBySku(String sku) {
-        String sql = "SELECT * FROM product WHERE SKU = ? AND deletedAt IS NULL";
-
-        try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, sku);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return resultSetProduct(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    
 }

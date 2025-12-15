@@ -24,13 +24,6 @@ public abstract class User {
         this.deletedAt = deletedAt;
     }
 
-    public User(UUID userID, String name, Role role, Date deletedAt) {
-        this.userID = userID;
-        this.name = name;
-        this.role = role;
-        this.deletedAt = deletedAt;
-    }
-
     public UUID getUserID() {
         return this.userID;
     }

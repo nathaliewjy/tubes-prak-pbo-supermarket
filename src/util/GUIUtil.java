@@ -2,7 +2,7 @@ package util;
 
 import javax.swing.*;
 
-public class CLIUtil {
+public class GUIUtil {
     public static String getString(String mess) {
         String input = JOptionPane.showInputDialog(null, mess);
         return input;

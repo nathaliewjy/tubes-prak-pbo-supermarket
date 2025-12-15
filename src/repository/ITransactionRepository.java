@@ -6,9 +6,11 @@ import models.orders.Transaction;
 
 public interface ITransactionRepository {
     public void addTransaction(Transaction m);
+
     public ArrayList<Transaction> getTransactionList();
+
     public void findByDate(String ddmmyy);
-    public void findByOrderID(String orderID);
+
     // ini ditambah nathalie
     double calculateTotalRevenue();
 }

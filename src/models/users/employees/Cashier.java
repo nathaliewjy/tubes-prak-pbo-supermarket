@@ -18,10 +18,6 @@ public class Cashier extends Employee {
         super(userID, name, Role.CASHIER, deletedAt, salary, hireDate, workingHours, nik);
     }
 
-    public Cashier(UUID userID, String name, Date deletedAt, int salary, Date hireDate, int workingHours, String nik) {
-        super(userID, name, Role.CASHIER, deletedAt, salary, hireDate, workingHours, nik);
-    }
-
     @Override
     public String toString() {
         return super.toString();

@@ -35,7 +35,7 @@ public class TransactionRepository implements ITransactionRepository {
             pstmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
             pstmt.setDouble(4, m.getAmountToPay());
             pstmt.setString(5, m.getPaymentMethod().toString());
-            
+
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.getSQLState();
@@ -70,18 +70,15 @@ public class TransactionRepository implements ITransactionRepository {
         return transactionList;
     }
 
-    public void findByOrderID(String orderID) {
-        conn = Database.connect();
-        PreparedStatement pstmt = null;
-        
+
     @Override
     public double calculateTotalRevenue() {
         String sql = "SELECT SUM(TotalPrice) AS TotalPendapatan FROM `transaction`";
 
         double total = 0;
         try (Connection conn = Database.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
                 total = rs.getDouble("TotalPendapatan");

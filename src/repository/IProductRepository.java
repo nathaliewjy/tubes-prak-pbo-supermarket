@@ -12,7 +12,8 @@ public interface IProductRepository {
     Product findProductById(java.util.UUID id);
     Product findProductBySKU(String sku);
     void updateProductStock(Product product);
-    // ini ditambah sama nathalie
     void updateProductPrice(UUID prodID, double newPrice);
     ArrayList<Product> getExpiredProducts(int days);
+    public ArrayList<Product> getProductsByCategory(ProductCategory category);
+    public ArrayList<Product> getAllProducts();
 }

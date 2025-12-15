@@ -21,11 +21,7 @@ public class Manager extends Employee {
         this.department = department;
     }
 
-    public Manager(UUID userID, String name, Date deletedAt, int salary, Date hireDate, int workingHours, String nik,
-            String department) {
-        super(userID, name, Role.MANAGER, deletedAt, salary, hireDate, workingHours, nik);
-        this.department = department;
-    }
+
 
     public String getDepartment() {
         return this.department;

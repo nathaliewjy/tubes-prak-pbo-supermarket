@@ -154,7 +154,7 @@ public class ManagerController {
             throw new InvalidInputException("Stocker not found");
         }
 
-        Product product = productRepository.findBySku(productSku);
+        Product product = productRepository.findProductBySKU(productSku);
         if (product == null) {
             throw new InvalidInputException("Product not found");
         }
