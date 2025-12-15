@@ -9,4 +9,6 @@ public interface ITransactionRepository {
     public ArrayList<Transaction> getTransactionList();
     public void findByDate(String ddmmyy);
     public void findByOrderID(String orderID);
+    // ini ditambah nathalie
+    double calculateTotalRevenue();
 }

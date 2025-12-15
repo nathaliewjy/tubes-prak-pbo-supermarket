@@ -1,9 +1,7 @@
 package models.presensi;
 
-import models.users.Employee;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.UUID;
 
 public class Presensi {
@@ -18,6 +16,13 @@ public class Presensi {
         this.date = date;
         this.status = status;
         this.empNIK = empNIK;
+        this.empID = empID;
+    }
+
+    public Presensi(UUID presensiID, Date date, StatusKehadiran status, UUID empID) {
+        this.presensiID = presensiID;
+        this.date = date;
+        this.status = status;
         this.empID = empID;
     }
 

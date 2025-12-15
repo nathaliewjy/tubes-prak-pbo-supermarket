@@ -16,11 +16,11 @@ public interface IEmployeeRepository {
 
     ArrayList<Employee> getAllEmployee();
 
+    Employee findById(UUID employeeID);
+
     void updateJobdesk(UUID employeeID, String jobdesk);
 
+    void updateEmployee (Employee e);
+
     void changeRole(UUID employeeID, Role oldRole, Role newRole);
-
-    void updateEmployee(Employee e);
-
-    Employee findById(UUID employeeID);
 }

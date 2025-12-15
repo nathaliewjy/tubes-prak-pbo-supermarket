@@ -17,6 +17,7 @@ public class Product {
 
     public Product(String sku, String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate) {
         this.prodID = UUID.randomUUID();
+        this.sku = sku;
         this.brand = brand;
         this.category = category;
         this.price = price;
@@ -26,6 +27,7 @@ public class Product {
         this.expiryDate = expiryDate;
     }
 
+    // ambil dari db
     public Product(UUID prodID, String sku,  String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Date deletedAt) {
         this.prodID = prodID;
         this.sku = sku;
@@ -45,6 +47,14 @@ public class Product {
 
     public void setProdID(UUID prodID) {
         this.prodID = prodID;
+    }
+
+    public String getSku() {
+        return this.sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public String getBrand() {
@@ -100,7 +110,7 @@ public class Product {
     }
 
     public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = Product.this.expiryDate;
+        this.expiryDate = expiryDate;
     }
 
     public Date getDeletedAt() {

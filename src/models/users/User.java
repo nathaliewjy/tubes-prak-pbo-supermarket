@@ -9,8 +9,16 @@ public abstract class User {
     private Role role;
     private Date deletedAt;
 
-    public User(String name, Role role, Date deletedAt) {
+    //buat create
+    public User(String name, Role role) {
         this.userID = UUID.randomUUID();
+        this.name = name;
+        this.role = role;
+        this.deletedAt = null;
+    }
+    // buat ngambil dari db
+    public User(UUID userID, String name, Role role, Date deletedAt) {
+        this.userID = userID;
         this.name = name;
         this.role = role;
         this.deletedAt = deletedAt;

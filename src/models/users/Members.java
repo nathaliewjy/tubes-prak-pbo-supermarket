@@ -7,12 +7,14 @@ public class Members extends User {
     private String phone;
     private int point;
 
-    public Members(String phone, String name, Date deletedAt) {
-        super(name, Role.MEMBER, deletedAt);
+    // create new
+    public Members(String name, String phone) {
+        super(name, Role.MEMBER);
         this.phone = phone;
         this.point = 0;
     }
 
+    // ambil dari db
     public Members(UUID userID, String name, Date deletedAt, String phone, int point) {
         super(userID, name, Role.MEMBER, deletedAt);
         this.phone = phone;

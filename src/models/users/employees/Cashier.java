@@ -8,8 +8,14 @@ import java.util.UUID;
 
 public class Cashier extends Employee {
 
-    public Cashier(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Date deletedAt) {
-        super(salary, hireDate, workingHours, nik, userID, name, Role.CASHIER, deletedAt);
+    // create new
+    public Cashier(String name, int salary, Date hireDate, int workingHours, String nik) {
+        super(name, Role.CASHIER, salary, hireDate, workingHours, nik);
+    }
+
+    // ambil dari db
+    public Cashier(UUID userID, String name, Date deletedAt, int salary, Date hireDate, int workingHours, String nik) {
+        super(userID, name, Role.CASHIER, deletedAt, salary, hireDate, workingHours, nik);
     }
 
     public Cashier(UUID userID, String name, Date deletedAt, int salary, Date hireDate, int workingHours, String nik) {

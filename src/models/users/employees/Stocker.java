@@ -8,8 +8,15 @@ import java.util.UUID;
 
 public class Stocker extends Employee {
 
-    public Stocker(int salary, Date hireDate, int workingHours, String nik, UUID userID, String name, Date deletedAt) {
-        super(salary, hireDate, workingHours, nik, userID, name, Role.STOCKER, deletedAt);
+    // create new
+    public Stocker(String name, int salary, Date hireDate, int workingHours, String nik) {
+        super(name, Role.STOCKER, salary, hireDate, workingHours, nik);
+    }
+
+    // ambil dari db
+    public Stocker(UUID userID, String name, Date deletedAt, int salary, Date hireDate,
+                   int workingHours, String nik) {
+        super(userID, name, Role.STOCKER, deletedAt, salary, hireDate, workingHours, nik);
     }
 
     public Stocker(UUID userID, String name, Date deletedAt, int salary, Date hireDate,
