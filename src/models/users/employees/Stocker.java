@@ -19,6 +19,8 @@ public class Stocker extends Employee {
         super(userID, name, Role.STOCKER, deletedAt, salary, hireDate, workingHours, nik);
     }
 
+
+
     @Override
     public String toString() {
         return super.toString();

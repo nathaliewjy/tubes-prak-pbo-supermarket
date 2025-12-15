@@ -10,10 +10,11 @@ public interface IProductRepository {
     void addProduct(Product product);
     void deleteProduct(java.util.UUID id);
     Product findProductById(java.util.UUID id);
-    ArrayList<Product> getProductsByCategory(ProductCategory category);
+    Product findProductBySKU(String sku);
     void updateProductStock(Product product);
     void updateProductPrice(UUID prodID, double newPrice);
     ArrayList<Product> getExpiredProducts(int days);
     ArrayList<Product> getAllProducts();
     Product getProductByName(String name); // ***
+    ArrayList<Product> getProductsByCategory(ProductCategory category);
 }

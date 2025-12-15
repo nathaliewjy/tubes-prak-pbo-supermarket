@@ -1,5 +1,6 @@
 package controller;
 
+import exception.InvalidInputException;
 import models.jobdesk.RequestRestock;
 import models.products.Product;
 import models.users.Employee;
@@ -7,27 +8,24 @@ import models.users.Role;
 import models.users.employees.Cashier;
 import models.users.employees.Manager;
 import models.users.employees.Stocker;
-import repository.IEmployeeRepository;
-import repository.IPresensiRepository;
-import repository.IProductRepository;
-import repository.IRequestRestockRepository;
+import repository.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
-import Exception.InvalidInputException;
 
 public class ManagerController {
     private IEmployeeRepository employeeRepository;
     private IPresensiRepository presensiRepository;
     private IProductRepository productRepository;
     private IRequestRestockRepository requestRestockRepository;
+    private ITransactionRepository transactionRepository;
 
-    public ManagerController(IEmployeeRepository employeeRepository, IPresensiRepository presensiRepository, IProductRepository productRepository, IRequestRestockRepository requestRestockRepository) {
+    public ManagerController(IEmployeeRepository employeeRepository, IPresensiRepository presensiRepository, IProductRepository productRepository, IRequestRestockRepository requestRestockRepository, ITransactionRepository transactionRepository) {
         this.employeeRepository = employeeRepository;
         this.presensiRepository = presensiRepository;
         this.productRepository = productRepository;
         this.requestRestockRepository = requestRestockRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public ArrayList<Employee> getAllEmployees() {
@@ -44,8 +42,8 @@ public class ManagerController {
         if (workingHours < 0 || workingHours > 24) {
             throw new InvalidInputException("Working hours  kosong");
         }
-        if (nik == null || nik.length() < 16) {
-            throw new InvalidInputException("NIK kosong / kurang dari 16");
+        if (nik == null || nik.length() < 6) {
+            throw new InvalidInputException("NIK kosong / kurang dari 6");
         }
         if (role == null) {
             throw new InvalidInputException("Role ksong");
@@ -78,7 +76,7 @@ public class ManagerController {
     }
 
     public void fireEmployee(String nik) throws InvalidInputException {
-        if (nik == null || nik.length() != 16) {
+        if (nik == null || nik.length() != 6) {
             throw new InvalidInputException("NIK salah");
         }
 
@@ -91,15 +89,15 @@ public class ManagerController {
         employeeRepository.deleteEmployee(nik);
     }
 
-    public void changeRole(UUID employeeID, Role newRole) throws InvalidInputException {
-        if (employeeID == null) {
-            throw new InvalidInputException("ID kosong");
+    public void changeRole(String nik, Role newRole) throws InvalidInputException {
+        if (nik == null || nik.length() < 6) {
+            throw new InvalidInputException("NIK kosong");
         }
         if (newRole == null) {
             throw new InvalidInputException("New role kosong");
         }
 
-        Employee e = employeeRepository.findById(employeeID);
+        Employee e = employeeRepository.findByNik(nik);
 
         if (e == null) {
             throw new InvalidInputException("Employee not found");
@@ -111,58 +109,58 @@ public class ManagerController {
             throw new InvalidInputException("Old role sama dengan new role");
         }
 
-        employeeRepository.changeRole(employeeID, oldRole, newRole);
+        employeeRepository.changeRole(e.getUserID(), oldRole, newRole);
     }
 
-    public double calculateSalary(UUID employeeID) throws InvalidInputException {
-        if (employeeID == null) {
-            throw new InvalidInputException("EmployeeID cant be null");
+    public double calculateSalary(String nik) throws InvalidInputException {
+        if (nik == null || nik.length() < 6) {
+            throw new InvalidInputException("NIK cant be null");
         }
 
-        Employee e = employeeRepository.findById(employeeID);
+        Employee e = employeeRepository.findByNik(nik);
 
         if (e == null) {
             throw new InvalidInputException("EMployee not found");
         }
 
-        int totalPres = presensiRepository.countPresensi(employeeID);
+        int totalPres = presensiRepository.countPresensi(e.getUserID());
         double salaryPerDay = e.getSalary() / 30.0;
         double salaryAkhir = salaryPerDay * totalPres;
 
         return salaryAkhir;
     }
 
-    public void assignRestock(UUID managerID, UUID stockerID, UUID productID, int quantity) throws InvalidInputException {
-        if (managerID == null) {
-            throw new InvalidInputException("ManagerID kosong");
+    public void assignRestock(String managerNik, String stockerNik, String productSku, int quantity) throws InvalidInputException {
+        if (managerNik == null || managerNik.length() < 6) {
+            throw new InvalidInputException("NIK Manager kosong");
         }
-        if (stockerID == null) {
-            throw new InvalidInputException("StockerID kosong");
+        if (stockerNik == null || stockerNik.length() < 6) {
+            throw new InvalidInputException("NIK Stocker kosong");
         }
-        if (productID == null) {
-            throw new InvalidInputException("ProductID kosong");
+        if (productSku == null) {
+            throw new InvalidInputException("SKU kosong");
         }
         if (quantity <= 0) {
             throw new InvalidInputException("Quantity harus > 0");
         }
 
-        Employee manager = employeeRepository.findById(managerID);
+        Employee manager = employeeRepository.findByNik(managerNik);
         if (manager == null || manager.getRole() != Role.MANAGER) {
             throw new InvalidInputException("Manager not found");
         }
 
-        Employee stocker = employeeRepository.findById(stockerID);
+        Employee stocker = employeeRepository.findByNik(stockerNik);
         if (stocker == null || stocker.getRole() != Role.STOCKER) {
             throw new InvalidInputException("Stocker not found");
         }
 
-        Product product = productRepository.findProductById(productID);
+        Product product = productRepository.findProductBySKU(productSku);
         if (product == null) {
             throw new InvalidInputException("Product not found");
         }
 
-        RequestRestock req = new RequestRestock(productID, quantity, managerID);
-        req.setStockerID(stockerID);
+        RequestRestock req = new RequestRestock(product.getProdID(), quantity, manager.getUserID());
+        req.setStockerID(stocker.getUserID());
 
         requestRestockRepository.createRequest(req);
     }
@@ -177,25 +175,12 @@ public class ManagerController {
         return reqList;
     }
 
-    public double monitorTotalUang() throws InvalidInputException {
-        ArrayList<Product> prods = productRepository.getAllProducts();
-
-        if (prods.isEmpty()) {
-            throw new InvalidInputException("Product kosong");
-        }
-
-        double totalUang = 0;
-
-        for (Product p : prods) {
-            int stock = p.getStockInShelf() + p.getStockInStorage();
-            double uang = stock * p.getPrice();
-
-            totalUang += uang;
-        }
-
-        return totalUang;
+    // ini jadinya ambil dari total pendapatan per order
+    public double monitorTotalPendapatan() throws InvalidInputException {
+        return transactionRepository.calculateTotalRevenue();
     }
 
+    // total barang terjual --> semua brand yg udah pernah dibeli cust (tabel OrderProducts)
     public int monitorTotalBarang() throws InvalidInputException {
         ArrayList<Product> prods = productRepository.getAllProducts();
 
@@ -210,5 +195,23 @@ public class ManagerController {
         }
 
         return totalBarang;
+    }
+
+    public Employee loginManager(String nik) throws InvalidInputException {
+        if (nik == null || nik.length() < 6) {
+            throw new InvalidInputException("NIK salah");
+        }
+
+        Employee emp = employeeRepository.findByNik(nik);
+
+        if (emp == null) {
+            throw new InvalidInputException("Emp not found");
+        }
+
+        if (emp.getRole() != Role.MANAGER) {
+            throw new InvalidInputException("Bukan manager");
+        }
+
+        return emp;
     }
 }

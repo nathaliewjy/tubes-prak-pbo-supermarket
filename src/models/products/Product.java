@@ -27,6 +27,7 @@ public class Product {
         this.expiryDate = expiryDate;
     }
 
+    // ambil dari db
     public Product(UUID prodID, String sku,  String brand, ProductCategory category, double price, int stockInStorage, int stockInShelf, Date manufactureDate, Date expiryDate, Date deletedAt) {
         this.prodID = prodID;
         this.sku = sku;
@@ -39,7 +40,7 @@ public class Product {
         this.expiryDate = expiryDate;
         this.deletedAt = deletedAt;
     }
-    
+
     public UUID getProdID() {
         return this.prodID;
     }
@@ -109,7 +110,7 @@ public class Product {
     }
 
     public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = Product.this.expiryDate;
+        this.expiryDate = expiryDate;
     }
 
     public Date getDeletedAt() {

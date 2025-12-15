@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,40 +15,41 @@ import models.products.ProductCategory;
 import util.Database;
 
 public class OrderRepository implements IOrderRepository {
-    // private HashMap<Order, Integer> orderList;
     Connection conn = Database.connect();
 
     public OrderRepository() {
-        // this.orderList = new HashMap<>();
+
     }
 
     @Override
-    public String addOrder(Order m) {
+    public void addOrder(Order order) {
         conn = Database.connect();
         PreparedStatement pstmt = null;
         PreparedStatement pstmt2 = null;
 
-        String sqlIntoOrders = "INSERT INTO orders(OrderID,MemberID,OrderDate,TotalAmount) VALUES(?,?,current_timestamp(),?)";
+        String sqlIntoOrders = "INSERT INTO orders(OrderID,MemberID,OrderDate,TotalAmount) VALUES(?,?,?,?)";
         String sqlIntoOrdersProduct = "INSERT INTO order_product(OrderID,ProductID,Quantity) VALUES(?,?,?)";
 
-        String orderID = UUID.randomUUID().toString();
-        String memberID = m.getMemberID().toString(); // Tostring karena tipe data di sql char
-        double totalPrice = m.getTotalPrice();
         try {
             pstmt = conn.prepareStatement(sqlIntoOrders);
-            pstmt.setString(1, orderID);
-            pstmt.setString(2, memberID);
-            pstmt.setDouble(3, totalPrice);
+            pstmt.setString(1, order.getOrderID().toString());
+            if (order.getMemberID() != null) {
+                pstmt.setString(2, order.getMemberID().toString());
+            } else {
+                pstmt.setNull(2, java.sql.Types.NULL);
+            }
+            pstmt.setObject(3, order.getOrderDate());
+            pstmt.setDouble(4, order.getTotalPrice());
             pstmt.executeUpdate(); // insert ke table orders
             pstmt2 = conn.prepareStatement(sqlIntoOrdersProduct);
-            for (Map.Entry<Product, Integer> entry : m.getListItems().entrySet()) { // buat dapetin quantity dari suatu
-                                                                                    // produk
+            for (Map.Entry<Product, Integer> entry : order.getListItems().entrySet()) {
+                // buat dapetin quantity dari suatu produk
                 // ngeloop tiap produk yang dipesan dalam order,
                 // trs ngambil quantity tiap produk
                 // quantity bwt isi tabel order_product.quantity
                 Product p = entry.getKey();
                 Integer quantity = entry.getValue();
-                pstmt2.setString(1, orderID);
+                pstmt2.setString(1, order.getOrderID().toString());
                 pstmt2.setString(2, p.getProdID().toString());
                 pstmt2.setInt(3, quantity);
                 pstmt2.executeUpdate();
@@ -59,13 +59,9 @@ public class OrderRepository implements IOrderRepository {
         } catch (SQLException e) {
             e.getMessage();
         }
-        return orderID;
     }
 
-    public void deleteOrder() {
-        // work here
-    }
-
+    @Override
     public HashMap<Product, Integer> getOrderItems(UUID orderID) {
         String sql = "SELECT op.Quantity, p.* " + //  Ambil smua column dari product + quantity
                 "FROM order_product op " +
@@ -82,7 +78,7 @@ public class OrderRepository implements IOrderRepository {
                 Product product = new Product(
                         rs.getString("SKU"),
                         rs.getString("Brand"),
-                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE, // Prdouct enum
+                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE,
                         rs.getDouble("PRICE"),
                         rs.getInt("StockInStorage"),
                         rs.getInt("StockInShelf"),
@@ -100,6 +96,7 @@ public class OrderRepository implements IOrderRepository {
 
     }
 
+    @Override
     public ArrayList<Order> getOrderList() { // masukin semua order ke arrayList
         ArrayList<Order> orderList = new ArrayList<>();
         String sqlForOrders = "SELECT * FROM orders ORDER BY OrderDate DESC";
@@ -112,14 +109,11 @@ public class OrderRepository implements IOrderRepository {
             while (rs.next()) {
                 UUID orderID = UUID.fromString(rs.getString("OrderID")); // dri string ke uuid
                 UUID memberID = UUID.fromString(rs.getString("MemberID"));
-                java.sql.Date orderDate = rs.getDate("OrderDate"); // ini entah kenapa harus pake java.sql.date, gabisa
-                                                                   // pake Date
-                double totalPrice = rs.getDouble("TotalAmount");
+
+                // double totalPrice = rs.getDouble("TotalAmount");
 
                 HashMap<Product, Integer> listItems = getOrderItems(orderID);
-
-                Order order = new Order(memberID, orderDate, listItems);
-                order.setTotalPrice(totalPrice);
+                Order order = new Order(memberID, listItems);
                 orderList.add(order);
             }
 

@@ -19,4 +19,12 @@ public interface IEmployeeRepository {
     void deleteEmployee(String nik);
 
     ArrayList<Employee> getAllEmployee();
+
+    Employee findById(UUID employeeID);
+
+    void updateJobdesk(UUID employeeID, String jobdesk);
+
+    void updateEmployee (Employee e);
+
+    void changeRole(UUID employeeID, Role oldRole, Role newRole);
 }

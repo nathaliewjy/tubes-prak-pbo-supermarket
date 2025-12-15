@@ -18,7 +18,9 @@ public class PresensiRepository implements IPresensiRepository {
         Presensi presensi = new Presensi(
                 rs.getDate("TanggalKehadiran"),
                 StatusKehadiran.valueOf(rs.getString("StatusKehadiran")),
+                rs.getString("NIK"),
                 UUID.fromString(rs.getString("EmployeeID")));
+
         presensi.setPresensiID(UUID.fromString(rs.getString("PresensiID")));
         return presensi;
     }
@@ -60,5 +62,27 @@ public class PresensiRepository implements IPresensiRepository {
             e.printStackTrace();
         }
         return presensiList;
+    }
+
+    @Override
+    public int countPresensi(UUID employeeID) {
+        int totalPres = 0;
+
+        String sql = "SELECT COUNT(*) AS Total_Presensi FROM presensi WHERE EmployeeID = ? AND StatusKehadiran = 'HADIR'";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, employeeID.toString());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalPres = rs.getInt("Total_Presensi");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalPres;
     }
 }

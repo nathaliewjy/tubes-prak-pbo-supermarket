@@ -1,7 +1,5 @@
 package repository;
 
-
-
 import models.jobdesk.RequestRestock;
 import models.jobdesk.RequestStatus;
 import util.Database;
@@ -108,7 +106,5 @@ public class RequestRestockRepository implements IRequestRestockRepository {
 
         return reqList;
     }
-
-    
 
 }
