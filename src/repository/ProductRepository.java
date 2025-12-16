@@ -156,6 +156,36 @@ public class ProductRepository implements IProductRepository {
         }
     }
 
+    @Override
+    public void updateProductShelfStock(Product product, int stockInShelf) {
+        String sql = "UPDATE product SET StockInShelf = ? , StockInStorage = ? WHERE ProdID = ?";
+        try (Connection conn = Database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, product.getStockInShelf() + stockInShelf);
+            pstmt.setInt(2, product.getStockInStorage()-stockInShelf);
+            pstmt.setString(3, product.getProdID().toString());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateProductStorageStock(Product product, int stockInStorage) {
+        String sql = "UPDATE product SET StockInStorage = ? WHERE ProdID = ?";
+        try (Connection conn = Database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, stockInStorage);
+            pstmt.setString(2, product.getProdID().toString());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public ArrayList<Product> getAllProductsByExpired() {
         ArrayList<Product> listProductExpired = new ArrayList<>();
         String sql = "SELECT * FROM products WHERE ExpiryDate < NOW()";
@@ -238,4 +268,26 @@ public class ProductRepository implements IProductRepository {
         return null;
 
     }
+
+    public ArrayList<Product> checkEmptyStock() {
+        ArrayList<Product> productList = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE StockInShelf = 0 AND deletedAt IS NULL";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = Database.connect();
+            pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                productList.add(resultSetProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
+
+  
+    
 }
+

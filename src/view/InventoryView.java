@@ -8,6 +8,7 @@ import models.users.Employee;
 import repository.EmployeeRepository;
 import repository.ProductRepository;
 import repository.RequestRestockRepository;
+import Exception.InvalidInputException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,9 +17,8 @@ import java.util.ArrayList;
 
 public class InventoryView extends JFrame {
 
-    private InventoryController inventoryController; // controllerr
-
-    private Employee currentEmployee; // user yg login
+    private InventoryController inventoryController;
+    private Employee currentEmployee;
 
     // login
     private JTextField nikField;
@@ -31,14 +31,20 @@ public class InventoryView extends JFrame {
 
     private DefaultTableModel requestTableModel;
     private JTable requestTable;
+    
+    private DefaultTableModel emptyStockTableModel;
+    private JTable emptyStockTable;
 
     // inputs
     private JTextField txtExpiredDays;
     private JComboBox<ProductCategory> cbCategory;
 
     private JTextField txtProductName;
-    private JTextField txtShelf;
     private JTextField txtStorage;
+    
+    // inputs for restock needed
+    private JTextField txtProductNameRestock;
+    private JTextField txtQuantityRestock;
 
     public InventoryView() {
 
@@ -89,7 +95,7 @@ public class InventoryView extends JFrame {
 
             boolean check = inventoryController.Login(nik);
 
-            if (check) { // cek nik
+            if (check) {
                 currentEmployee = inventoryController.getCurrentEmployee();
                 showMainUI();
             } else {
@@ -115,7 +121,8 @@ public class InventoryView extends JFrame {
         tabPane.add("Products", productsTab());
         tabPane.add("Expired", expiredTab());
         tabPane.add("Category", categoryTab());
-        tabPane.add("Update Stock", updateTab());
+        tabPane.add("Update Storage Stock", updateStorageStock());
+        tabPane.add("Restock Needed", restockNeededTab());
         tabPane.add("My Requests", requestTab());
 
         add(tabPane, BorderLayout.CENTER);
@@ -228,12 +235,11 @@ public class InventoryView extends JFrame {
         return p;
     }
 
-    // TAB: UPDATE STOCK
-    private JPanel updateTab() {
+    // TAB: UPDATE Storage STOCK
+    private JPanel updateStorageStock() {
         JPanel p = new JPanel(new GridLayout(4, 2, 8, 8));
 
         txtProductName = new JTextField();
-        txtShelf = new JTextField();
         txtStorage = new JTextField();
 
         JButton btnUpdate = new JButton("Update");
@@ -241,8 +247,6 @@ public class InventoryView extends JFrame {
         p.add(new JLabel("Product Name:"));
         p.add(txtProductName);
 
-        p.add(new JLabel("Shelf:"));
-        p.add(txtShelf);
 
         p.add(new JLabel("Storage:"));
         p.add(txtStorage);
@@ -255,23 +259,68 @@ public class InventoryView extends JFrame {
         return p;
     }
 
-    // TAB: REQUEST RESTOCK
+    // TAB: RESTOCK NEEDED (NEW)
+    private JPanel restockNeededTab() {
+        JPanel p = new JPanel(new BorderLayout());
+
+        String[] cols = { "Name", "Category", "Shelf", "Storage", "Expiry" };
+        emptyStockTableModel = new DefaultTableModel(cols, 0);
+        emptyStockTable = new JTable(emptyStockTableModel);
+
+        p.add(new JScrollPane(emptyStockTable), BorderLayout.CENTER);
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+
+        JButton btnLoad = new JButton("Load Empty Stock");
+        JPanel loadPanel = new JPanel();
+        loadPanel.add(btnLoad);
+
+        btnLoad.addActionListener(e -> loadEmptyStock());
+
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Update shelf Stock"));
+
+        txtProductNameRestock = new JTextField();
+        txtQuantityRestock = new JTextField();
+        JButton btnUpdateRestock = new JButton("Update Stock");
+
+        formPanel.add(new JLabel("Product Name:"));
+        formPanel.add(txtProductNameRestock);
+        formPanel.add(new JLabel("Stock shelf to Add:"));
+        formPanel.add(txtQuantityRestock);
+        formPanel.add(new JLabel());
+        formPanel.add(btnUpdateRestock);
+
+        btnUpdateRestock.addActionListener(e -> updateStockShelf());
+
+        bottomPanel.add(loadPanel, BorderLayout.NORTH);
+        bottomPanel.add(formPanel, BorderLayout.CENTER);
+
+        p.add(bottomPanel, BorderLayout.SOUTH);
+
+        return p;
+    }
+
+    // TAB: REQUEST RESTOCK (MODIFIED)
     private JPanel requestTab() {
         JPanel p = new JPanel(new BorderLayout());
 
-        String[] cols = { "Product ID", "Qty", "Status", "Date" };
+        String[] cols = { "Request ID", "Product ID", "Quantity Shelf to Restock", "Status" };
         requestTableModel = new DefaultTableModel(cols, 0);
         requestTable = new JTable(requestTableModel);
 
-        JButton btn = new JButton("Load Requests");
+        JPanel bottomPanel = new JPanel();
+        JButton btnLoad = new JButton("Load Requests");
+        JButton btnComplete = new JButton("Complete Selected Request");
 
-        btn.addActionListener(e -> loadMyRequests());
+        btnLoad.addActionListener(e -> loadMyRequests());
+        btnComplete.addActionListener(e -> completeSelectedRequest());
 
-        JPanel bottom = new JPanel();
-        bottom.add(btn);
+        bottomPanel.add(btnLoad);
+        bottomPanel.add(btnComplete);
 
         p.add(new JScrollPane(requestTable), BorderLayout.CENTER);
-        p.add(bottom, BorderLayout.SOUTH);
+        p.add(bottomPanel, BorderLayout.SOUTH);
 
         return p;
     }
@@ -293,6 +342,26 @@ public class InventoryView extends JFrame {
         }
     }
 
+    private void loadEmptyStock() {
+        emptyStockTableModel.setRowCount(0);
+
+        ArrayList<Product> emptyList = inventoryController.checkEmptyStock();
+
+        if (emptyList != null && !emptyList.isEmpty()) {
+            for (Product p : emptyList) {
+                emptyStockTableModel.addRow(new Object[] {
+                        p.getBrand(),
+                        p.getCategory(),
+                        p.getStockInShelf(),
+                        p.getStockInStorage(),
+                        p.getExpiryDate()
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No empty stock found");
+        }
+    }
+
     private void loadMyRequests() {
         requestTableModel.setRowCount(0);
 
@@ -300,8 +369,10 @@ public class InventoryView extends JFrame {
 
         if (list != null) {
             for (RequestRestock r : list) {
+                String productName = inventoryController.getProductNameById(r.getProductID());
                 requestTableModel.addRow(new Object[] {
-                        r.getProductID(),
+                        r.getRequestID(),
+                        productName,
                         r.getQuantityToRestock(),
                         r.getRequestStatus()
                 });
@@ -309,13 +380,13 @@ public class InventoryView extends JFrame {
         }
     }
 
+    // update storage stock
     private void updateStock() {
         try {
             String name = txtProductName.getText();
-            int shelf = Integer.parseInt(txtShelf.getText());
-            int storage = Integer.parseInt(txtStorage.getText());
+            int Storage = Integer.parseInt(txtStorage.getText());
 
-            boolean check = inventoryController.updateStockByName(name, shelf, storage);
+            boolean check = inventoryController.updateStorageStock(name, Storage);
 
             if (check) {
                 JOptionPane.showMessageDialog(this, "Updated");
@@ -325,6 +396,50 @@ public class InventoryView extends JFrame {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Invalid number");
+        }
+    }
+
+    private void updateStockShelf() {
+        try {
+            String name = txtProductNameRestock.getText();
+            int shelfQtyToAdd = Integer.parseInt(txtQuantityRestock.getText());
+
+            boolean check = inventoryController.updateStockShelf(name, shelfQtyToAdd);
+
+            if (check) {
+                JOptionPane.showMessageDialog(this, "Stock updated successfully");
+                loadEmptyStock();
+                txtProductNameRestock.setText("");
+                txtQuantityRestock.setText("");
+            }
+
+        } catch (InvalidInputException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Quantity must be a number", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void completeSelectedRequest() {
+        int selectedRow = requestTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a request first");
+            return;
+        }
+
+        try {
+            String requestID = requestTableModel.getValueAt(selectedRow, 0).toString();
+
+            boolean check = inventoryController.completeRestockRequest(requestID);
+
+            if (check) {
+                JOptionPane.showMessageDialog(this, "Request completed successfully");
+                loadMyRequests();
+            }
+
+        } catch (InvalidInputException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
