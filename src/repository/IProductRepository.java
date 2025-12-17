@@ -12,9 +12,12 @@ public interface IProductRepository {
     Product findProductById(java.util.UUID id);
     Product findProductBySKU(String sku);
     void updateProductStock(Product product);
+    void updateProductShelfStock(Product product, int stockInShelf);
+    void updateProductStorageStock(Product product, int stockInStorage);
     void updateProductPrice(UUID prodID, double newPrice);
     ArrayList<Product> getExpiredProducts(int days);
     ArrayList<Product> getAllProducts();
-    Product getProductByName(String name); // ***
+    Product getProductByName(String name); 
     ArrayList<Product> getProductsByCategory(ProductCategory category);
+    ArrayList<Product> checkEmptyStock();
 }

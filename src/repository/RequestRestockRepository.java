@@ -107,4 +107,31 @@ public class RequestRestockRepository implements IRequestRestockRepository {
         return reqList;
     }
 
+    @Override
+     public RequestRestock getRequestById(UUID requestID) {
+        String sql = "SELECT * FROM jobdesk WHERE RequestID = ?";
+        RequestRestock request = null;
+
+        try (Connection conn = Database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, requestID.toString());
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                request = new RequestRestock(
+                        UUID.fromString(rs.getString("RequestID")),
+                        UUID.fromString(rs.getString("ProductID")),
+                        rs.getInt("QuantityToRestock"),
+                        RequestStatus.valueOf(rs.getString("RequestStatus")),
+                        UUID.fromString(rs.getString("ManagerID")),
+                        UUID.fromString(rs.getString("StockerID")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return request;
+    }
 }

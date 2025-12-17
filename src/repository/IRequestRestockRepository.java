@@ -11,4 +11,5 @@ public interface IRequestRestockRepository {
     void updateStatus(UUID requestID, RequestStatus newStatus);
     ArrayList<RequestRestock> getPendingRequest(UUID stockerID); // buart liat jobdesk yg blm selesai
     ArrayList<RequestRestock> getAllRequests();
+    RequestRestock getRequestById(UUID requestID);
 }
