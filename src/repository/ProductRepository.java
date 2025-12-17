@@ -186,32 +186,8 @@ public class ProductRepository implements IProductRepository {
             e.printStackTrace();
         }
     }
-    public ArrayList<Product> getAllProductsByExpired() {
-        ArrayList<Product> listProductExpired = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE ExpiryDate < NOW()";
-        ResultSet rs = null;
-        try (Connection conn = Database.connect();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                Product product = new Product(
-                        rs.getString("SKU"),
-                        rs.getString("Brand"),
-                        rs.getString("Category").equals("FOOD") ? ProductCategory.FOOD : ProductCategory.BEVERAGE,
-                        rs.getDouble("PRICE"),
-                        rs.getInt("StockInStorage"),
-                        rs.getInt("StockInShelf"),
-                        rs.getDate("ManufactureDate"),
-                        rs.getDate("ExpiryDate"));
-                listProductExpired.add(product);
-            }
-        } catch (SQLException e) {
-            e.getMessage();
-
-        }
-        return listProductExpired;
-    }
+    
 
     @Override
     public void updateProductPrice(UUID prodID, double newPrice) {
@@ -250,6 +226,7 @@ public class ProductRepository implements IProductRepository {
         return expiredProds;
     }
 
+    @Override
     public Product getProductByName(String name) {
         String sql = "SELECT * FROM product WHERE Brand = ? AND deletedAt IS NULL";
         Connection conn = null;
@@ -269,6 +246,7 @@ public class ProductRepository implements IProductRepository {
 
     }
 
+    @Override
     public ArrayList<Product> checkEmptyStock() {
         ArrayList<Product> productList = new ArrayList<>();
         String sql = "SELECT * FROM product WHERE StockInShelf = 0 AND deletedAt IS NULL";

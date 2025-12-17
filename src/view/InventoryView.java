@@ -305,7 +305,7 @@ public class InventoryView extends JFrame {
     private JPanel requestTab() {
         JPanel p = new JPanel(new BorderLayout());
 
-        String[] cols = { "Request ID", "Product ID", "Quantity Shelf to Restock", "Status" };
+        String[] cols = { "Request ID", "Product ID", "Quantity Storage to Restock", "Status" };
         requestTableModel = new DefaultTableModel(cols, 0);
         requestTable = new JTable(requestTableModel);
 

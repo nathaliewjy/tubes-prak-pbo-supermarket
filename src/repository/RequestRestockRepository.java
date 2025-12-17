@@ -107,6 +107,7 @@ public class RequestRestockRepository implements IRequestRestockRepository {
         return reqList;
     }
 
+    @Override
      public RequestRestock getRequestById(UUID requestID) {
         String sql = "SELECT * FROM jobdesk WHERE RequestID = ?";
         RequestRestock request = null;

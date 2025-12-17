@@ -85,9 +85,7 @@ public class InventoryController {
         if (product.getStockInStorage() < qtyShelfToAdd) {
             throw new InvalidInputException("Stock in storage not enough! Available: " + product.getStockInStorage());
         }
-
         
-
         productRepository.updateProductShelfStock(product, qtyShelfToAdd); // update stock di shelf
 
         return true;
@@ -139,17 +137,11 @@ public class InventoryController {
         return productRepository.getAllProducts();
     }
 
-    public Product getProductByName(String name) {
-        return productRepository.getProductByName(name);
-    }
-
+    
     public ArrayList<RequestRestock> checkMyRequest(UUID stockerID) {
         return requestRestockRepository.getPendingRequest(stockerID);
     }
 
-    public ArrayList<RequestRestock> getAllRequests() {
-        return requestRestockRepository.getAllRequests();
-    }
 
     public ArrayList<Product> checkEmptyStock() {
         return productRepository.checkEmptyStock();

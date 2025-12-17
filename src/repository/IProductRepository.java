@@ -17,7 +17,7 @@ public interface IProductRepository {
     void updateProductPrice(UUID prodID, double newPrice);
     ArrayList<Product> getExpiredProducts(int days);
     ArrayList<Product> getAllProducts();
-    Product getProductByName(String name); // ***
+    Product getProductByName(String name); 
     ArrayList<Product> getProductsByCategory(ProductCategory category);
     ArrayList<Product> checkEmptyStock();
 }
