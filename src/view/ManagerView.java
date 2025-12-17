@@ -321,15 +321,17 @@ public class ManagerView extends JFrame {
         JDialog dialog = new JDialog(this, "Assign Restock", true);
         dialog.setSize(400, 250);
         dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new GridLayout(5, 2));
+        dialog.setLayout(new GridLayout(5, 2, 10, 10));
         JTextField m = new JTextField(); JTextField s = new JTextField();
         JTextField p = new JTextField(); JTextField q = new JTextField();
         JButton btn = new JButton("ASSIGN");
+
         dialog.add(new JLabel(" NIK Manager : ")); dialog.add(m);
         dialog.add(new JLabel(" NIK Stocker : ")); dialog.add(s);
         dialog.add(new JLabel(" SKU : ")); dialog.add(p);
-        dialog.add(new JLabel(" Quantity : ")); dialog.add(q);
+        dialog.add(new JLabel(" Quantity (for storage) : ")); dialog.add(q);
         dialog.add(new JLabel("")); dialog.add(btn);
+
         btn.addActionListener(e -> {
             try {
                 controller.assignRestock(m.getText(), s.getText(), p.getText(), Integer.parseInt(q.getText()));
