@@ -15,14 +15,12 @@ import java.util.UUID;
 
 public class ManagerController {
     private IEmployeeRepository employeeRepository;
-    private IPresensiRepository presensiRepository;
     private IProductRepository productRepository;
     private IRequestRestockRepository requestRestockRepository;
     private ITransactionRepository transactionRepository;
 
-    public ManagerController(IEmployeeRepository employeeRepository, IPresensiRepository presensiRepository, IProductRepository productRepository, IRequestRestockRepository requestRestockRepository, ITransactionRepository transactionRepository) {
+    public ManagerController(IEmployeeRepository employeeRepository, IProductRepository productRepository, IRequestRestockRepository requestRestockRepository, ITransactionRepository transactionRepository) {
         this.employeeRepository = employeeRepository;
-        this.presensiRepository = presensiRepository;
         this.productRepository = productRepository;
         this.requestRestockRepository = requestRestockRepository;
         this.transactionRepository = transactionRepository;
@@ -110,24 +108,6 @@ public class ManagerController {
         }
 
         employeeRepository.changeRole(e.getUserID(), oldRole, newRole);
-    }
-
-    public double calculateSalary(String nik) throws InvalidInputException {
-        if (nik == null || nik.length() < 6) {
-            throw new InvalidInputException("NIK cant be null");
-        }
-
-        Employee e = employeeRepository.findByNik(nik);
-
-        if (e == null) {
-            throw new InvalidInputException("EMployee not found");
-        }
-
-        int totalPres = presensiRepository.countPresensi(e.getUserID());
-        double salaryPerDay = e.getSalary() / 30.0;
-        double salaryAkhir = salaryPerDay * totalPres;
-
-        return salaryAkhir;
     }
 
     public void assignRestock(String managerNik, String stockerNik, String productSku, int quantity) throws InvalidInputException {

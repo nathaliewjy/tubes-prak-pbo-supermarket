@@ -39,13 +39,11 @@ public class App {
             });
         } else if (selectedApp == 1) {
             IEmployeeRepository empRepo = new EmployeeRepository();
-            IPresensiRepository presRepo = new PresensiRepository();
             IProductRepository prodRepo = new ProductRepository();
             IRequestRestockRepository reqRepo = new RequestRestockRepository();
             ITransactionRepository transRepo = new TransactionRepository();
 
-            ManagerController managerController = new ManagerController(empRepo, presRepo, prodRepo, reqRepo,
-                    transRepo);
+            ManagerController managerController = new ManagerController(empRepo, prodRepo, reqRepo, transRepo);
 
             SwingUtilities.invokeLater(() -> {
                 ManagerView view = new ManagerView(managerController);

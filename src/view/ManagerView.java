@@ -102,7 +102,7 @@ public class ManagerView extends JFrame {
     private JPanel initEmployeePanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        String[] kolom = {"NIK", "Name", "Role", "Salary", "Working Hours"};
+        String[] kolom = {"NIK", "Name", "Role", "Working Hours"};
         modelEmployee = new DefaultTableModel(kolom, 0);
         tableEmployee = new JTable(modelEmployee);
         panel.add(new JScrollPane(tableEmployee), BorderLayout.CENTER);
@@ -111,7 +111,6 @@ public class ManagerView extends JFrame {
         JButton btnRefresh = new JButton("Refresh");
         JButton btnHire = new JButton("Hire");
         JButton btnFire = new JButton("Fire");
-        JButton btnGaji = new JButton("Salary Check");
         JButton btnRole = new JButton("Change Role");
         JButton btnLogout = new JButton("LOGOUT");
         btnLogout.setBackground(Color.RED);
@@ -120,7 +119,6 @@ public class ManagerView extends JFrame {
         btnPanel.add(btnRefresh);
         btnPanel.add(btnHire);
         btnPanel.add(btnFire);
-        btnPanel.add(btnGaji);
         btnPanel.add(btnRole);
         btnPanel.add(btnLogout);
         panel.add(btnPanel, BorderLayout.SOUTH);
@@ -135,23 +133,6 @@ public class ManagerView extends JFrame {
         btnRefresh.addActionListener(e -> refreshEmployeeTable());
         btnHire.addActionListener(e -> showHireDialog());
         btnFire.addActionListener(e -> showFireDialog());
-
-        btnGaji.addActionListener(e -> {
-            int row = tableEmployee.getSelectedRow(); // ngecek baris yg dipilih
-            if (row != -1) {
-                try {
-                    String nik = (String) modelEmployee.getValueAt(row, 0);
-                    double gaji = controller.calculateSalary(nik);
-                    JOptionPane.showMessageDialog(this, "Salary : Rp " + (long)gaji);
-                } catch (InvalidInputException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Select employee first!", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-        });
 
         btnRole.addActionListener(e -> {
             int row = tableEmployee.getSelectedRow();
