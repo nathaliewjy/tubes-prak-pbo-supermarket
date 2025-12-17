@@ -8,7 +8,7 @@ import models.users.Employee;
 import repository.EmployeeRepository;
 import repository.ProductRepository;
 import repository.RequestRestockRepository;
-import Exception.InvalidInputException;
+import exception.InvalidInputException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

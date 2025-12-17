@@ -58,7 +58,7 @@ public class App {
             System.exit(0);
         }
 
-        // kata jarvis
+
         // kenapa ga lgsg new ManagerView() aja, kenapa harus pake SwingUtilities ...
         // karena waktu program di run, ada 2 thread (jalur) : main thread (psvm) sama
         // event dispatch thread (khusus punyanya java swing, jd cmn ngurusin UI)

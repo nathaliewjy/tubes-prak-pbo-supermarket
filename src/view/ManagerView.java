@@ -1,7 +1,7 @@
 package view;
 
 import controller.ManagerController;
-import Exception.InvalidInputException;
+import exception.InvalidInputException;
 import models.jobdesk.RequestRestock;
 import models.users.Employee;
 import models.users.Role;
